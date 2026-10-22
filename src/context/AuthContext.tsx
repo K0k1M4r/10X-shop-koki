@@ -6,7 +6,7 @@ interface AuthContextValue {
   login: (username: string) => void
   logout: () => void
 }
-
+// eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext<AuthContextValue>({
   user: null,
   login: () => {},
