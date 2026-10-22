@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { fetchProducts } from '../api/products'
+import ProductGrid from '../components/ProductGrid'
 import type { Product } from '../types'
 
 function Catalog() {
@@ -33,13 +34,7 @@ function Catalog() {
   return (
     <div>
       <h1 className="mb-4 text-2xl font-bold">Catalog</h1>
-      <ul className="space-y-2">
-        {products.map((product) => (
-          <li key={product.id}>
-            {product.title} - ${product.price}
-          </li>
-        ))}
-      </ul>
+      <ProductGrid products={products} />
     </div>
   )
 }

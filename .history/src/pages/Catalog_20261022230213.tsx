@@ -1,0 +1,42 @@
+import { useEffect, useState } from 'react'
+import { fetchProducts } from '../api/products'
+import ProductGrid from '../components/ProductGrid'
+import type { Product } from '../types'
+
+function Catalog() {
+  const [products, setProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    let ignore = false
+
+    fetchProducts()
+      .then((data) => {
+        if (!ignore) setProducts(data.products)
+      })
+      .catch((err: Error) => {
+        if (!ignore) setError(err.message)
+      })
+      .finally(() => {
+        if (!ignore) setLoading(false)
+      })
+
+    return () => {
+      ignore = true
+    }
+  }, [])
+
+  if (loading) return <p>Loading products...</p>
+  if (error) return <p className="text-red-600">Something went wrong: {error}</p>
+  if (products.length === 0) return <p>No products found.</p>
+
+  return (
+    <div>
+      <h1 className="mb-4 text-2xl font-bold">Catalog</h1>
+      <ProductGrid products={products} />
+    </div>
+  )
+}
+
+export default Catalog
