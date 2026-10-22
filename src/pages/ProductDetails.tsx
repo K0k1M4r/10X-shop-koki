@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
+import { CartContext } from '../context/CartContext'
 import { Link, useParams } from 'react-router-dom'
 import { fetchProduct } from '../api/products'
 import type { Product } from '../types'
+
 
 function ProductDetails() {
   const { id } = useParams()
@@ -10,6 +12,7 @@ function ProductDetails() {
   const [error, setError] = useState<string | null>(null)
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
+  const { addItem } = useContext(CartContext)
 
   useEffect(() => {
     if (!id) return
@@ -51,8 +54,7 @@ function ProductDetails() {
   const increase = () => setQuantity((q) => Math.min(product.stock, q + 1))
 
   const handleAddToCart = () => {
-    // Temporary: this becomes a real cart action when we add CartContext
-    console.log('Add to cart:', product.id, quantity)
+    addItem(product, quantity)
   }
 
   return (

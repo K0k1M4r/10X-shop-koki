@@ -1,6 +1,7 @@
 import { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
+import { CartContext } from '../context/CartContext'
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   isActive
@@ -8,8 +9,8 @@ const linkClass = ({ isActive }: { isActive: boolean }) =>
     : 'text-blue-100 hover:text-white'
 
 function Header() {
-  const { user, logout } = useContext(AuthContext)
-
+  const { user, logout } = useContext(AuthContext);
+  const { totalQuantity } = useContext(CartContext)
   return (
     <header className="bg-blue-600">
       <nav className="mx-auto flex max-w-6xl items-center justify-between p-4">
@@ -18,7 +19,14 @@ function Header() {
         </NavLink>
         <div className="flex items-center gap-4">
           <NavLink to="/" end className={linkClass}>Catalog</NavLink>
-          <NavLink to="/cart" className={linkClass}>Cart</NavLink>
+          <NavLink to="/cart" className={linkClass}>
+            Cart    
+            {totalQuantity > 0 && (
+              <span className="ml-1 rounded-full bg-white px-2 text-sm font-semibold text-blue-600">
+                {totalQuantity}
+              </span>
+            )}
+          </NavLink>
           {user ? (
             <>
               <span className="text-white">Hi, {user}</span>
