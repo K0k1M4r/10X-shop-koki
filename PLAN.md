@@ -10,3 +10,5 @@
 - **Week 3 (Oct 31-Nov 6):** responsive, errors, deploy, docs, submit
 
 FULL and BONUS features only after CORE is finished.
+
+- Week 1 finished on Oct 23 (started late, caught up using the buffer days)
