@@ -8,6 +8,8 @@ function ProductDetails() {
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [selectedImage, setSelectedImage] = useState(0)
+  const [quantity, setQuantity] = useState(1)
 
   useEffect(() => {
     if (!id) return
@@ -42,17 +44,51 @@ function ProductDetails() {
     )
   }
 
+  const mainImage = product.images[selectedImage] ?? product.thumbnail
+  const outOfStock = product.stock === 0
+
+  const decrease = () => setQuantity((q) => Math.max(1, q - 1))
+  const increase = () => setQuantity((q) => Math.min(product.stock, q + 1))
+
+  const handleAddToCart = () => {
+    // Temporary: this becomes a real cart action when we add CartContext
+    console.log('Add to cart:', product.id, quantity)
+  }
+
   return (
     <div>
       <Link to="/" className="text-blue-600 underline">
         ← Back to catalog
       </Link>
       <div className="mt-4 grid gap-6 md:grid-cols-2">
-        <img
-          src={product.thumbnail}
-          alt={product.title}
-          className="w-full rounded-lg bg-gray-100 object-contain"
-        />
+        <div>
+          <img
+            src={mainImage}
+            alt={product.title}
+            className="w-full rounded-lg bg-gray-100 object-contain"
+          />
+          {product.images.length > 1 && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {product.images.map((image, index) => (
+                <button
+                  key={image}
+                  onClick={() => setSelectedImage(index)}
+                  className={`h-16 w-16 overflow-hidden rounded border-2 bg-gray-100 ${
+                    index === selectedImage
+                      ? 'border-blue-600'
+                      : 'border-transparent'
+                  }`}
+                >
+                  <img
+                    src={image}
+                    alt={`${product.title} ${index + 1}`}
+                    className="h-full w-full object-contain"
+                  />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
         <div>
           <h1 className="text-2xl font-bold">{product.title}</h1>
           <p className="mt-1 text-sm text-gray-500">{product.category}</p>
@@ -61,8 +97,34 @@ function ProductDetails() {
             ${product.price}
           </p>
           <p className="mt-1 text-sm">
-            {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+            {outOfStock ? 'Out of stock' : `${product.stock} in stock`}
           </p>
+
+          <div className="mt-4 flex items-center gap-3">
+            <button
+              onClick={decrease}
+              disabled={outOfStock || quantity <= 1}
+              className="h-9 w-9 rounded border border-gray-300 bg-white disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              −
+            </button>
+            <span className="w-8 text-center font-semibold">{quantity}</span>
+            <button
+              onClick={increase}
+              disabled={outOfStock || quantity >= product.stock}
+              className="h-9 w-9 rounded border border-gray-300 bg-white disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              +
+            </button>
+          </div>
+
+          <button
+            onClick={handleAddToCart}
+            disabled={outOfStock}
+            className="mt-4 w-full rounded bg-blue-600 p-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300"
+          >
+            {outOfStock ? 'Out of stock' : 'Add to Cart'}
+          </button>
         </div>
       </div>
     </div>
