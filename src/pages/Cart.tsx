@@ -1,6 +1,7 @@
 import { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { CartContext } from '../context/CartContext'
+import QuantityPicker from '../components/QuantityPicker'
 
 function Cart() {
   const { items, removeItem, setQuantity } = useContext(CartContext)
@@ -37,23 +38,11 @@ function Cart() {
               <p className="font-semibold">{item.title}</p>
               <p className="text-sm text-gray-500">${item.price} each</p>
             </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setQuantity(item.id, item.quantity - 1)}
-                disabled={item.quantity <= 1}
-                className="h-8 w-8 rounded border border-gray-300 bg-white disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                −
-              </button>
-              <span className="w-6 text-center">{item.quantity}</span>
-              <button
-                onClick={() => setQuantity(item.id, item.quantity + 1)}
-                disabled={item.quantity >= item.stock}
-                className="h-8 w-8 rounded border border-gray-300 bg-white disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                +
-              </button>
-            </div>
+            <QuantityPicker
+                value={item.quantity}
+                max={item.stock}
+                onChange={(quantity) => setQuantity(item.id, quantity)}
+              />
             <p className="w-24 text-right font-semibold">
               ${(item.price * item.quantity).toFixed(2)}
             </p>

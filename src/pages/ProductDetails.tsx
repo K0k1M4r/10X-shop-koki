@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 import { CartContext } from '../context/CartContext'
 import { Link, useParams } from 'react-router-dom'
 import { fetchProduct } from '../api/products'
+import QuantityPicker from '../components/QuantityPicker'
 import type { Product } from '../types'
 
 
@@ -50,8 +51,7 @@ function ProductDetails() {
   const mainImage = product.images[selectedImage] ?? product.thumbnail
   const outOfStock = product.stock === 0
 
-  const decrease = () => setQuantity((q) => Math.max(1, q - 1))
-  const increase = () => setQuantity((q) => Math.min(product.stock, q + 1))
+
 
   const handleAddToCart = () => {
     addItem(product, quantity)
@@ -102,22 +102,13 @@ function ProductDetails() {
             {outOfStock ? 'Out of stock' : `${product.stock} in stock`}
           </p>
 
-          <div className="mt-4 flex items-center gap-3">
-            <button
-              onClick={decrease}
-              disabled={outOfStock || quantity <= 1}
-              className="h-9 w-9 rounded border border-gray-300 bg-white disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              −
-            </button>
-            <span className="w-8 text-center font-semibold">{quantity}</span>
-            <button
-              onClick={increase}
-              disabled={outOfStock || quantity >= product.stock}
-              className="h-9 w-9 rounded border border-gray-300 bg-white disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              +
-            </button>
+          <div className="mt-4">
+              <QuantityPicker
+                value={quantity}
+                max={product.stock}
+                onChange={setQuantity}
+                disabled={outOfStock}
+              />
           </div>
 
           <button
