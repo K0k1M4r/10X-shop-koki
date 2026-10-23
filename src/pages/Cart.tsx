@@ -56,7 +56,7 @@ function Cart() {
         ))}
       </ul>
 
-      <div className="mt-6 flex items-center justify-between">
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
         <p className="text-xl font-bold">Total: ${total.toFixed(2)}</p>
         <Link
           to="/checkout"

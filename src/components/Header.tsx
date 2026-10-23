@@ -13,11 +13,11 @@ function Header() {
   const { totalQuantity } = useContext(CartContext)
   return (
     <header className="bg-blue-600">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between p-4">
+      <nav className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 p-4">
         <NavLink to="/" className="text-xl font-bold text-white">
           10X Shop
         </NavLink>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
           <NavLink to="/" end className={linkClass}>Catalog</NavLink>
           <NavLink to="/cart" className={linkClass}>
             Cart    
