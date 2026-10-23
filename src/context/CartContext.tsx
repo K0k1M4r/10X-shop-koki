@@ -8,6 +8,7 @@ interface CartContextValue {
   addItem: (product: Product, quantity: number) => void
   removeItem: (id: number) => void
   setQuantity: (id: number, quantity: number) => void
+  clearCart: () => void
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -17,6 +18,7 @@ export const CartContext = createContext<CartContextValue>({
   addItem: () => {},
   removeItem: () => {},
   setQuantity: () => {},
+  clearCart: () => {},
 })
 
 export function CartProvider({ children }: { children: ReactNode }) {
@@ -59,12 +61,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
       current.map((item) => (item.id === id ? { ...item, quantity } : item)),
     )
   }
-
+  const clearCart = () => setItems([])
   const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0)
 
   return (
     <CartContext.Provider
-      value={{ items, totalQuantity, addItem, removeItem, setQuantity }}
+      value={{ items, totalQuantity, addItem, removeItem, setQuantity, clearCart }}
     >
       {children}
     </CartContext.Provider>
