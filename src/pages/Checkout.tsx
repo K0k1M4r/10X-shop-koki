@@ -111,7 +111,7 @@ function Checkout() {
               type={field.type}
               value={values[field.name]}
               onChange={handleChange}
-              className="mt-1 w-full rounded border border-gray-300 p-2"
+              className="mt-1 w-full rounded border border-gray-300 p-2 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
             />
             {errors[field.name] && (
               <p className="mt-1 text-sm text-red-600">{errors[field.name]}</p>
@@ -120,7 +120,7 @@ function Checkout() {
         ))}
         <button
           type="submit"
-          className="w-full rounded bg-blue-600 p-3 font-semibold text-white hover:bg-blue-700"
+          className="w-full rounded bg-blue-600 p-3 font-semibold text-white hover:bg-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-2"
         >
           Place order
         </button>

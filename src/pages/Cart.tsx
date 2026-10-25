@@ -60,7 +60,7 @@ function Cart() {
         <p className="text-xl font-bold">Total: ${total.toFixed(2)}</p>
         <Link
           to="/checkout"
-          className="rounded bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700"
+          className="rounded bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-2"
         >
           Proceed to checkout
         </Link>

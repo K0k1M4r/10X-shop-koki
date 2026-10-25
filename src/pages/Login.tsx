@@ -45,7 +45,7 @@ function Login() {
             name="username"
             value={values.username}
             onChange={handleChange}
-            className="mt-1 w-full rounded border border-gray-300 p-2"
+            className="mt-1 w-full rounded border border-gray-300 p-2 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
           />
           {errors.username && (
             <p className="mt-1 text-sm text-red-600">{errors.username}</p>
@@ -61,7 +61,7 @@ function Login() {
             type="password"
             value={values.password}
             onChange={handleChange}
-            className="mt-1 w-full rounded border border-gray-300 p-2"
+            className="mt-1 w-full rounded border border-gray-300 p-2 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
           />
           {errors.password && (
             <p className="mt-1 text-sm text-red-600">{errors.password}</p>
@@ -69,7 +69,7 @@ function Login() {
         </div>
         <button
           type="submit"
-          className="w-full rounded bg-blue-600 p-2 font-semibold text-white hover:bg-blue-700"
+          className="w-full rounded bg-blue-600 p-2 font-semibold text-white hover:bg-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-2"
         >
           Log in
         </button>

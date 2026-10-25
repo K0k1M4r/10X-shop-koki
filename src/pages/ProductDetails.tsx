@@ -114,7 +114,7 @@ function ProductDetails() {
           <button
             onClick={handleAddToCart}
             disabled={outOfStock}
-            className="mt-4 w-full rounded bg-blue-600 p-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300"
+            className="mt-4 w-full rounded bg-blue-600 p-3 font-semibold text-white hover:bg-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-300"
           >
             {outOfStock ? 'Out of stock' : 'Add to Cart'}
           </button>
