@@ -22,3 +22,15 @@
 ### Plan for Week 2
 - Product Details page, Cart (context), Checkout form and confirmation
 - First deployment to Vercel or Netlify
+
+
+## DEBUG-LOG
+
+| # | Problem | How I found it | Fix |
+|---|---------|----------------|-----|
+| 1 | `npm run dev`: "Missing script" | Read the terminal error, then ran `dir` and saw no `src` folder | I was one folder too high; moved into the project folder |
+| 2 | Blank page, "Invalid hook call" in the console | Browser console (F12) | Two copies of React from the extra install; deleted `node_modules` and reinstalled inside the project |
+| 3 | Yellow underline on the `AuthProvider` import | Hovered over it in VS Code | Wrong path (`../src/...`); also I hadn't wrapped `<App />` yet |
+| 4 | `.history` backup files in Git and lint errors | `git status` and `npm run lint` output | Added `.history` to `.gitignore` and to ESLint's ignore list |
+| 5 | Lint: Fast refresh error in `AuthContext.tsx` | `npm run lint` | Added an ESLint disable comment for that line (file exports a context and a component) |
+| 6 | Red underline on `erasableSyntaxOnly` | Problems tab in VS Code | VS Code's built-in TypeScript was older; typecheck and build still passed, so I ignored it |

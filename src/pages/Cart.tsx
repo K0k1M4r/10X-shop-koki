@@ -4,8 +4,9 @@ import { CartContext } from '../context/CartContext'
 import QuantityPicker from '../components/QuantityPicker'
 
 function Cart() {
+  
   const { items, removeItem, setQuantity } = useContext(CartContext)
-
+  
   if (items.length === 0) {
     return (
       <div>
@@ -19,7 +20,7 @@ function Cart() {
   }
 
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
-
+  
   return (
     <div>
       <h1 className="mb-4 text-2xl font-bold">Cart</h1>
