@@ -1,75 +1,57 @@
-# React + TypeScript + Vite
+# 10X Shop
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An online store single-page app built as the 10X Front-end diploma project.
 
-Currently, two official plugins are available:
+**Live site:** https://your-link.vercel.app
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features (CORE)
 
-## React Compiler
+- Catalog of products loaded from the DummyJSON API, with loading, error and empty states
+- Product details page with image gallery, quantity picker and Add to Cart
+- Shopping cart with quantity changes, remove and totals, shared through React Context
+- Simulated login (local React Context, no real authentication)
+- Checkout form with validation and a local order confirmation (no real payment)
+- Guests are redirected from Checkout to Login and returned after logging in
+- Responsive layout (375px to desktop) with hover, focus and disabled states
+- Error Boundary so a crash in one page shows a friendly message
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech stack
 
-## Expanding the ESLint configuration
+- React 19 + TypeScript (strict mode)
+- Vite
+- Tailwind CSS v4
+- React Router
+- DummyJSON API (https://dummyjson.com)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Getting started
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+Other scripts:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm run typecheck   # strict TypeScript check, 0 errors expected
+npm run build       # production build into dist/
+npm run lint        # ESLint
 ```
+
+## Project structure
+
+- `src/api` - functions that fetch data from DummyJSON
+- `src/types` - TypeScript types for products, cart items and forms
+- `src/context` - AuthContext and CartContext
+- `src/components` - Layout, Header, ProductCard, ProductGrid, QuantityPicker, ErrorBoundary
+- `src/pages` - Catalog, ProductDetails, Cart, Checkout, Login, NotFound
+
+## Known limitations
+
+- The cart and the login are kept in memory only, so refreshing the page empties the cart and logs the user out
+- Login and checkout are simulations: any non-empty login works and no payment is processed
+- Only CORE features are implemented (no search, filters, sorting, reviews or orders page)
+
+## Deployment
+
+Deployed on Vercel. `vercel.json` rewrites every route to `index.html` so direct links such as `/products/5` and page refresh work.
