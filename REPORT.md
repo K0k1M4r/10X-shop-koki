@@ -13,13 +13,13 @@
 **Week 3 (Oct 31 - Nov 6)**
 - Planned: responsive, hover/focus states, errors, deploy, docs, submit.
 - Delivered: responsive fixes, focus and disabled states, Error Boundary, Vercel deploy, README, PLAN, REPORT and DEBUG-LOG.
-- On Nov 4 I got a grading checklist for the Oct 26 version. I am fixing the missing CORE items from it before the deadline. Done so far: Footer, ScrollToTop, full 404 page, Log in / Log out texts, logout redirect, Error Boundary texts, Login validation, and the product card details (discount, rating, stock badge, Add to cart).
+- On Nov 4 I got a grading checklist for the Oct 26 version. I fixed the missing CORE items from it before the deadline: Footer, ScrollToTop, full 404 page, Log in / Log out texts, Login validation, product card details, discounts on the product page and cart, Clear cart, and the Checkout validation and thank-you text.
 
 ## What I did not do
 
 - FULL and BONUS features: search, categories, sorting, pagination, reviews, related products, Orders, Profile, lazy routes, `@theme`, dark mode.
 - The cart and login are not saved, so a refresh empties the cart and logs the user out.
-- Still open as of Nov 4 (from the grading checklist): discount prices on the product page and in the cart, the "Clear cart" button, exact validation texts on Checkout, and a Firefox check.
+- Still open as of Nov 4: a Firefox check.
 
 ## 3 problems I hit
 
@@ -182,13 +182,22 @@ Changed the texts to "Log in" and "Log out", and logging out now sends you to th
 Added a "← Back to catalog" link, trimmed the username, and made the password need at least 6 characters, with "Password must be at least 6 characters" under the field.
 
 **types/index.ts, utils/price.ts and products.ts**
-Added `discountPercentage`, `rating` and an optional `brand` to the `Product` type. Made `utils/price.ts` with `discountedPrice` and `formatPrice`, so prices are worked out in one place and show like `$1,299.00`. The catalog now asks for 12 products with `limit` and `skip`.
+Added `discountPercentage`, `rating` and an optional `brand` to the `Product` type. Made `utils/price.ts` with `discountedPrice` and `formatPrice`, so prices are worked out in one place and show like `$1,299.00`. The catalog now asks for 12 products with `limit` and `skip`, and `fetchProduct` tells a missing product (404) apart from other errors.
 
 **ProductCard.tsx**
 The card now shows category and brand, the rating, the discounted price with the old price crossed out and a `−N%` badge, and a stock badge. Added an Add to cart button that is disabled at 0 stock, and `loading="lazy"` with width and height on the image. The button sits outside the link, so clicking it doesn't open the product page.
 
+**ProductDetails.tsx**
+Shows the discounted price with the old price crossed out and a `−N%` badge. A bad id like `/products/abc` shows the 404 page without sending a request, and so does a product that doesn't exist. I split it into two components with `key={id}`, so going to another product starts clean. The quantity picker now counts what's already in the cart and shows a message when you've added all the stock.
+
+**Cart.tsx, CartContext.tsx and price helpers**
+Cart items now keep `discountPercentage`, and `price.ts` got `unitPrice`, `lineTotal` and `cartTotal` so the cart and checkout use the same math. On the Cart page the item titles link to the product, and there are separate Subtotal and Total lines. I also added a Clear cart button that uses `clearCart`.
+
+**Checkout.tsx**
+Full name needs at least 3 characters and the address at least 5, with messages under the fields. An empty cart sends you to `/cart`. Place order greys out while submitting (a short 0.8 second wait), then it shows "Thank you! Your order has been placed." and empties the cart.
+
 ## Known limitations
 
 - The cart and the login are kept in memory only, so refreshing the page empties the cart and logs the user out.
-- Login and checkout are simulations: any non-empty login works and no payment is processed.
+- Login and checkout are simulations: any login with a 6 character password works and no payment is processed.
 - Only CORE features are implemented (no search, filters, sorting, pagination, reviews or orders page).
