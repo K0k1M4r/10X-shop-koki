@@ -24,7 +24,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     if (this.state.hasError) {
       return (
         <div className="mx-auto max-w-md p-8 text-center">
-          <h1 className="text-2xl font-bold">Something went wrong</h1>
+          <h1 className="text-2xl font-bold">Something went wrong.</h1>
           <p className="mt-2">
             This page hit an unexpected error. Try reloading, or go back home.
           </p>
@@ -32,7 +32,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
             onClick={() => window.location.reload()}
             className="mt-4 rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700"
           >
-            Reload page
+            Reload
           </button>
         </div>
       )
