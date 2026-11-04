@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
@@ -30,6 +30,12 @@ function Checkout() {
   })
   const [errors, setErrors] = useState<Partial<CheckoutFormValues>>({})
   const [order, setOrder] = useState<Order | null>(null)
+  const [submitting, setSubmitting] = useState(false)
+  const timer = useRef<number | undefined>(undefined)
+
+  useEffect(() => {
+    return () => window.clearTimeout(timer.current)
+  }, [])
 
   if (!user) {
     return <Navigate to="/login" state={{ from: '/checkout' }} replace />
@@ -38,8 +44,8 @@ function Checkout() {
   if (order) {
     return (
       <div className="mx-auto max-w-lg">
-        <h1 className="text-2xl font-bold">Thank you, {order.fullName}!</h1>
-        <p className="mt-2">Your order has been placed.</p>
+        <h1 className="text-2xl font-bold">Thank you! Your order has been placed.</h1>
+        <p className="mt-2">Order for {order.fullName}</p>
         <ul className="mt-4 space-y-1">
           {order.items.map((item) => (
             <li key={item.id} className="flex justify-between">
@@ -61,15 +67,7 @@ function Checkout() {
   }
 
   if (items.length === 0) {
-    return (
-      <div>
-        <h1 className="text-2xl font-bold">Checkout</h1>
-        <p className="mt-4">Your cart is empty.</p>
-        <Link to="/" className="text-blue-600 underline">
-          Browse products
-        </Link>
-      </div>
-    )
+    return <Navigate to="/cart" replace />
   }
 
   const total = cartTotal(items)
@@ -80,18 +78,38 @@ function Checkout() {
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
+    if (submitting) return
+
+    const fullName = values.fullName.trim()
+    const email = values.email.trim()
+    const address = values.address.trim()
+    const city = values.city.trim()
     const newErrors: Partial<CheckoutFormValues> = {}
-    if (!values.fullName.trim()) newErrors.fullName = 'Full name is required'
-    if (!values.email.trim()) newErrors.email = 'Email is required'
-    else if (!/^\S+@\S+\.\S+$/.test(values.email))
-      newErrors.email = 'Enter a valid email'
-    if (!values.address.trim()) newErrors.address = 'Address is required'
-    if (!values.city.trim()) newErrors.city = 'City is required'
+
+    if (!fullName) newErrors.fullName = 'Full name is required'
+    else if (fullName.length < 3)
+      newErrors.fullName = 'Full name must be at least 3 characters'
+
+    if (!email) newErrors.email = 'Email is required'
+    else if (!/^\S+@\S+\.\S+$/.test(email))
+      newErrors.email = 'Please enter a valid email address'
+
+    if (!address) newErrors.address = 'Address is required'
+    else if (address.length < 5)
+      newErrors.address = 'Address must be at least 5 characters'
+
+    if (!city) newErrors.city = 'City is required'
+
     setErrors(newErrors)
     if (Object.keys(newErrors).length > 0) return
 
-    setOrder({ items, total, fullName: values.fullName })
-    clearCart()
+    const snapshot: Order = { items, total, fullName }
+    setSubmitting(true)
+    timer.current = window.setTimeout(() => {
+      setOrder(snapshot)
+      clearCart()
+      setSubmitting(false)
+    }, 800)
   }
 
   return (
@@ -121,9 +139,10 @@ function Checkout() {
         ))}
         <button
           type="submit"
-          className="w-full rounded bg-blue-600 p-3 font-semibold text-white hover:bg-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-2"
+          disabled={submitting}
+          className="w-full rounded bg-blue-600 p-3 font-semibold text-white hover:bg-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-300"
         >
-          Place order
+          {submitting ? 'Placing order...' : 'Place order'}
         </button>
       </form>
     </div>
