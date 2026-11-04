@@ -19,7 +19,7 @@
 
 - FULL and BONUS features: search, categories, sorting, pagination, reviews, related products, Orders, Profile, lazy routes, `@theme`, dark mode.
 - The cart and login are not saved, so a refresh empties the cart and logs the user out.
-- Still open as of Nov 4 (from the grading checklist): discount prices and card details, "Clear cart" button, exact validation texts on Login and Checkout, and a Firefox check.
+- Still open as of Nov 4 (from the grading checklist): discount prices and card details, "Clear cart" button, exact validation texts on Checkout, and a Firefox check.
 
 ## 3 problems I hit
 
