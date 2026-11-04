@@ -1,22 +1,75 @@
+import { useContext } from 'react'
 import { Link } from 'react-router-dom'
+import { CartContext } from '../context/CartContext'
 import type { Product } from '../types'
+import { discountedPrice, formatPrice } from '../utils/price'
 
 function ProductCard({ product }: { product: Product }) {
+  const { addItem } = useContext(CartContext)
+
+  const outOfStock = product.stock === 0
+  const percent = Math.round(product.discountPercentage)
+  const hasDiscount = percent >= 1
+  const finalPrice = discountedPrice(product.price, product.discountPercentage)
+
+  let stockLabel = 'In stock'
+  let stockClass = 'bg-green-100 text-green-800'
+  if (outOfStock) {
+    stockLabel = 'Out of stock'
+    stockClass = 'bg-red-100 text-red-800'
+  } else if (product.stock <= 5) {
+    stockLabel = `Only ${product.stock} left`
+    stockClass = 'bg-amber-100 text-amber-800'
+  }
+
   return (
-    <Link
-      to={`/products/${product.id}`}
-      className="block overflow-hidden rounded-lg bg-white shadow transition hover:shadow-lg"
-    >
-      <img
-        src={product.thumbnail}
-        alt={product.title}
-        className="h-48 w-full bg-gray-100 object-contain"
-      />
-      <div className="p-3">
-        <h2 className="font-semibold">{product.title}</h2>
-        <p className="text-blue-600">${product.price}</p>
-      </div>
-    </Link>
+    <div className="flex flex-col overflow-hidden rounded-lg bg-white shadow transition hover:shadow-lg">
+      <Link to={`/products/${product.id}`} className="block flex-1">
+        <img
+          src={product.thumbnail}
+          alt={product.title}
+          loading="lazy"
+          width={300}
+          height={192}
+          className="h-48 w-full bg-gray-100 object-contain"
+        />
+        <div className="p-3">
+          <h2 className="font-semibold">{product.title}</h2>
+          <p className="text-sm text-gray-500">
+            {product.category}
+            {product.brand ? ` · ${product.brand}` : ''}
+          </p>
+          <p className="text-sm">★ {product.rating.toFixed(1)}</p>
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            <span className="font-semibold text-blue-600">
+              {formatPrice(finalPrice)}
+            </span>
+            {hasDiscount && (
+              <>
+                <span className="text-sm text-gray-400 line-through">
+                  {formatPrice(product.price)}
+                </span>
+                <span className="rounded bg-red-600 px-1.5 text-xs font-semibold text-white">
+                  −{percent}%
+                </span>
+              </>
+            )}
+          </div>
+          <span
+            className={`mt-2 inline-block rounded px-2 py-0.5 text-xs font-medium ${stockClass}`}
+          >
+            {stockLabel}
+          </span>
+        </div>
+      </Link>
+      <button
+        onClick={() => addItem(product, 1)}
+        disabled={outOfStock}
+        className="m-3 mt-0 rounded bg-blue-600 p-2 font-semibold text-white hover:bg-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-300"
+      >
+        Add to cart
+      </button>
+    </div>
   )
 }
 
