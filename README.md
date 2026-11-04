@@ -55,3 +55,11 @@ npm run lint        # ESLint
 ## Deployment
 
 Deployed on Vercel. `vercel.json` rewrites every route to `index.html` so direct links such as `/products/5` and page refresh work.
+
+## Data flow
+
+The Catalog and Product pages call fetchProducts and fetchProduct in `src/api/products.ts`, which load data from DummyJSON and return it typed, and the page keeps it in state. AuthContext holds the logged-in username and CartContext holds the cart items, and the Header, Cart, Checkout and Product pages read them with useContext. Add to Cart on the product page calls addItem, which updates the header badge and the Cart page. Checkout reads the cart and the user, saves the order in state when the form is valid, then calls clearCart.
+
+## Credits
+
+Product data and images from the DummyJSON API. Built with Vite, React, React Router and Tailwind CSS. AI help from Claude and Gemini (see `REPORT.md`).
