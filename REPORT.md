@@ -183,3 +183,6 @@ Changed the texts to "Log in" and "Log out", and logging out now sends you to th
 - The cart and the login are kept in memory only, so refreshing the page empties the cart and logs the user out.
 - Login and checkout are simulations: any non-empty login works and no payment is processed.
 - Only CORE features are implemented (no search, filters, sorting, reviews or orders page).
+
+**Login.tsx**
+Added a "← Back to catalog" link, trimmed the username, and made the password need at least 6 characters, with "Password must be at least 6 characters" under the field.
