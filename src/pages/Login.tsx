@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
 import type { LoginFormValues } from '../types'
 
@@ -22,20 +22,31 @@ function Login() {
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
+    const username = values.username.trim()
     const newErrors: Partial<LoginFormValues> = {}
-    if (!values.username.trim()) newErrors.username = 'Username is required'
-    if (!values.password.trim()) newErrors.password = 'Password is required'
+
+    if (!username) newErrors.username = 'Username is required'
+
+    if (!values.password.trim()) {
+      newErrors.password = 'Password is required'
+    } else if (values.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters'
+    }
+
     setErrors(newErrors)
     if (Object.keys(newErrors).length > 0) return
 
-    login(values.username)
+    login(username)
     navigate(from, { replace: true })
   }
 
   return (
     <div className="mx-auto max-w-sm">
-      <h1 className="mb-4 text-2xl font-bold">Login</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <Link to="/" className="text-blue-600 underline">
+        ← Back to catalog
+      </Link>
+      <h1 className="mb-4 mt-4 text-2xl font-bold">Login</h1>
+      <form onSubmit={handleSubmit} noValidate className="space-y-4">
         <div>
           <label htmlFor="username" className="block text-sm font-medium">
             Username
