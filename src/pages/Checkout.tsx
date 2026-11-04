@@ -4,6 +4,7 @@ import { Link, Navigate } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
 import { CartContext } from '../context/CartContext'
 import type { CartItem, CheckoutFormValues } from '../types'
+import { cartTotal, formatPrice, lineTotal } from '../utils/price'
 
 interface Order {
   items: CartItem[]
@@ -45,12 +46,12 @@ function Checkout() {
               <span>
                 {item.title} × {item.quantity}
               </span>
-              <span>${(item.price * item.quantity).toFixed(2)}</span>
+              <span>{formatPrice(lineTotal(item))}</span>
             </li>
           ))}
         </ul>
         <p className="mt-4 text-xl font-bold">
-          Total: ${order.total.toFixed(2)}
+          Total: {formatPrice(order.total)}
         </p>
         <Link to="/" className="mt-4 inline-block text-blue-600 underline">
           Continue shopping
@@ -71,7 +72,7 @@ function Checkout() {
     )
   }
 
-  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const total = cartTotal(items)
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     setValues({ ...values, [e.target.name]: e.target.value })
@@ -97,7 +98,7 @@ function Checkout() {
     <div className="mx-auto max-w-lg">
       <h1 className="mb-4 text-2xl font-bold">Checkout</h1>
       <p className="mb-4">
-        {items.length} item(s) · Total: <strong>${total.toFixed(2)}</strong>
+        {items.length} item(s) · Total: <strong>{formatPrice(total)}</strong>
       </p>
       <form onSubmit={handleSubmit} noValidate className="space-y-4">
         {fields.map((field) => (
