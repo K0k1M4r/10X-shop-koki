@@ -13,13 +13,13 @@
 **Week 3 (Oct 31 - Nov 6)**
 - Planned: responsive, hover/focus states, errors, deploy, docs, submit.
 - Delivered: responsive fixes, focus and disabled states, Error Boundary, Vercel deploy, README, PLAN, REPORT and DEBUG-LOG.
-- On Nov 4 I got a grading checklist for the Oct 26 version. I am fixing the missing CORE items from it before the deadline.
+- On Nov 4 I got a grading checklist for the Oct 26 version. I am fixing the missing CORE items from it before the deadline. Done so far: Footer, ScrollToTop, full 404 page, Log in / Log out texts, logout redirect and Error Boundary texts.
 
 ## What I did not do
 
 - FULL and BONUS features: search, categories, sorting, pagination, reviews, related products, Orders, Profile, lazy routes, `@theme`, dark mode.
 - The cart and login are not saved, so a refresh empties the cart and logs the user out.
-- Still open as of Nov 4 (from the grading checklist): discount prices and card details, Footer, ScrollToTop, full 404 page, "Clear cart" button, exact validation texts on Login and Checkout, and a Firefox check.
+- Still open as of Nov 4 (from the grading checklist): discount prices and card details, "Clear cart" button, exact validation texts on Login and Checkout, and a Firefox check.
 
 ## 3 problems I hit
 
@@ -67,7 +67,7 @@ Wrapped the app in `BrowserRouter` so routing works, all in `StrictMode`. The `A
 Used `NavLink` in the header so links switch pages without a reload. Hit a blank "Invalid hook call" error because my extra install gave me two copies of React, and reinstalling inside the project folder fixed it.
 
 **Layout.tsx, Header.tsx and pages**
-Layout wraps every page with the header using `children`, and Header is the blue nav bar. I also made six empty pages with just a heading so each route had something to show.
+Layout puts the header on every page, and Header is the blue nav bar. At first Layout wrapped the pages with `children`, and later I changed it to `<Outlet />` (see Nov 4). I also made six empty pages with just a heading so each route had something to show.
 
 ## Day 3: Login
 
@@ -78,7 +78,7 @@ Made a context that holds the logged-in username, with `login` and `logout` func
 A form with username and password that shows a red message if one is empty. After logging in it sends you back to the page you came from.
 
 **Header.tsx**
-Shows "Hi, name" and a Logout button when you're logged in.
+Shows "Hi, name" and a log out button when you're logged in.
 
 **Checkout redirect**
 If you're not logged in, Checkout sends you to Login and then back.
@@ -151,7 +151,7 @@ Added focus styles (blue border and ring) to the inputs and buttons, and a grey 
 ## Day 16: Error Boundary and DEBUG-LOG
 
 **ErrorBoundary.tsx**
-A class component that shows "Something went wrong" and a Reload button instead of a blank page. I wrapped the routes in `App.tsx` with it and tested it by throwing an error in Cart on purpose. My first test failed because I put `useLocation` and the test `throw` outside their functions, so I moved them inside.
+A class component that shows "Something went wrong." and a Reload button instead of a blank page. I wrapped the routes with it and tested it by throwing an error in Cart on purpose. My first test failed because I put `useLocation` and the test `throw` outside their functions, so I moved them inside.
 
 **DEBUG-LOG.md**
 A table of the bugs I hit, how I found each one and how I fixed it. It covers the wrong folder, the invalid hook call, the bad import path, the `.history` files, the fast-refresh lint error and the Error Boundary test.
@@ -163,6 +163,20 @@ My app is really one page, so opening `/products/5` directly or refreshing gives
 ## Day 18: README.md
 
 Replaced the Vite template text with a real README: what the project is, the live link, features, tech stack, how to run it, the folder structure and the known limitations.
+
+## Nov 4: Fixes from the grading checklist
+
+**Footer.tsx and ScrollToTop.tsx**
+Added a footer that shows on every page, and a small component that scrolls the page back to the top whenever the address changes.
+
+**Layout.tsx and App.tsx**
+Changed Layout to use `<Outlet />`, so `App.tsx` now has one layout route and every page is drawn inside it. The Error Boundary moved into Layout, so the header and footer stay visible if a page crashes.
+
+**NotFound.tsx**
+Made a full 404 page with a heading, a short description and a "Go to catalog" link.
+
+**Header.tsx and ErrorBoundary.tsx**
+Changed the texts to "Log in" and "Log out", and logging out now sends you to the home page. The Error Boundary now says "Something went wrong." with a "Reload" button.
 
 ## Known limitations
 

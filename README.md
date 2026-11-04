@@ -2,7 +2,7 @@
 
 An online store single-page app built as the 10X Front-end diploma project.
 
-**Live site:** https://10-x-shop-koki.vercel.app/
+**Live site:** https://10-x-shop-koki.vercel.app
 
 ## Features (CORE)
 
@@ -13,6 +13,7 @@ An online store single-page app built as the 10X Front-end diploma project.
 - Checkout form with validation and a local order confirmation (no real payment)
 - Guests are redirected from Checkout to Login and returned after logging in
 - Responsive layout (375px to desktop) with hover, focus and disabled states
+- Shared layout with header and footer, scroll to top on page change, and a 404 page
 - Error Boundary so a crash in one page shows a friendly message
 
 ## Tech stack
@@ -43,8 +44,12 @@ npm run lint        # ESLint
 - `src/api` - functions that fetch data from DummyJSON
 - `src/types` - TypeScript types for products, cart items and forms
 - `src/context` - AuthContext and CartContext
-- `src/components` - Layout, Header, ProductCard, ProductGrid, QuantityPicker, ErrorBoundary
+- `src/components` - Layout, Header, Footer, ScrollToTop, ProductCard, ProductGrid, QuantityPicker, ErrorBoundary
 - `src/pages` - Catalog, ProductDetails, Cart, Checkout, Login, NotFound
+
+## Data flow
+
+The Catalog and Product pages call `fetchProducts` and `fetchProduct` in `src/api/products.ts`, which load data from DummyJSON and return it typed, and the page keeps it in state. AuthContext holds the logged-in username and CartContext holds the cart items, and the Header, Cart, Checkout and Product pages read them with `useContext`. Add to Cart on the product page calls `addItem`, which updates the header badge and the Cart page. Checkout reads the cart and the user, saves the order in state when the form is valid, then calls `clearCart`.
 
 ## Known limitations
 
@@ -56,10 +61,6 @@ npm run lint        # ESLint
 
 Deployed on Vercel. `vercel.json` rewrites every route to `index.html` so direct links such as `/products/5` and page refresh work.
 
-## Data flow
-
-The Catalog and Product pages call fetchProducts and fetchProduct in `src/api/products.ts`, which load data from DummyJSON and return it typed, and the page keeps it in state. AuthContext holds the logged-in username and CartContext holds the cart items, and the Header, Cart, Checkout and Product pages read them with useContext. Add to Cart on the product page calls addItem, which updates the header badge and the Cart page. Checkout reads the cart and the user, saves the order in state when the form is valid, then calls clearCart.
-
 ## Credits
 
-Product data and images from the DummyJSON API. Built with Vite, React, React Router and Tailwind CSS. AI help from Claude and Gemini (see `REPORT.md`).
+Product data and images from the DummyJSON API. Built with Vite, React, React Router and Tailwind CSS. AI help from Claude and Gemini (see REPORT.md).
