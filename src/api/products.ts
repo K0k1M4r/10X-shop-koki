@@ -3,8 +3,10 @@ import type { Product, ProductsResponse } from '../types'
 
 // am orze uech vkitxot
 
-export async function fetchProducts(): Promise<ProductsResponse> {
-  const response = await fetch('https://dummyjson.com/products')
+export async function fetchProducts(limit = 12, skip = 0): Promise<ProductsResponse> {
+  const response = await fetch(
+    `https://dummyjson.com/products?limit=${limit}&skip=${skip}`,
+  )
   if (!response.ok) {
     throw new Error('Failed to load products')
   }
