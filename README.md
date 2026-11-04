@@ -7,6 +7,7 @@ An online store single-page app built as the 10X Front-end diploma project.
 ## Features (CORE)
 
 - Catalog of products loaded from the DummyJSON API, with loading, error and empty states
+- Product cards with category and brand, rating, discount badge, stock badge and Add to cart
 - Product details page with image gallery, quantity picker and Add to Cart
 - Shopping cart with quantity changes, remove and totals, shared through React Context
 - Simulated login (local React Context, no real authentication)
@@ -43,19 +44,20 @@ npm run lint        # ESLint
 
 - `src/api` - functions that fetch data from DummyJSON
 - `src/types` - TypeScript types for products, cart items and forms
+- `src/utils` - price helpers (discountedPrice, formatPrice)
 - `src/context` - AuthContext and CartContext
 - `src/components` - Layout, Header, Footer, ScrollToTop, ProductCard, ProductGrid, QuantityPicker, ErrorBoundary
 - `src/pages` - Catalog, ProductDetails, Cart, Checkout, Login, NotFound
 
 ## Data flow
 
-The Catalog and Product pages call `fetchProducts` and `fetchProduct` in `src/api/products.ts`, which load data from DummyJSON and return it typed, and the page keeps it in state. AuthContext holds the logged-in username and CartContext holds the cart items, and the Header, Cart, Checkout and Product pages read them with `useContext`. Add to Cart on the product page calls `addItem`, which updates the header badge and the Cart page. Checkout reads the cart and the user, saves the order in state when the form is valid, then calls `clearCart`.
+The Catalog and Product pages call `fetchProducts` and `fetchProduct` in `src/api/products.ts`, which load data from DummyJSON and return it typed, and the page keeps it in state. The catalog asks for 12 products with `limit` and `skip`. AuthContext holds the logged-in username and CartContext holds the cart items, and the Header, Cart, Checkout and Product pages read them with `useContext`. Add to Cart (on a product card or the product page) calls `addItem`, which updates the header badge and the Cart page. Prices are calculated in one place, `src/utils/price.ts`. Checkout reads the cart and the user, saves the order in state when the form is valid, then calls `clearCart`.
 
 ## Known limitations
 
 - The cart and the login are kept in memory only, so refreshing the page empties the cart and logs the user out
 - Login and checkout are simulations: any non-empty login works and no payment is processed
-- Only CORE features are implemented (no search, filters, sorting, reviews or orders page)
+- Only CORE features are implemented (no search, filters, sorting, pagination, reviews or orders page)
 
 ## Deployment
 

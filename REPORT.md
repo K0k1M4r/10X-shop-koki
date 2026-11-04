@@ -13,13 +13,13 @@
 **Week 3 (Oct 31 - Nov 6)**
 - Planned: responsive, hover/focus states, errors, deploy, docs, submit.
 - Delivered: responsive fixes, focus and disabled states, Error Boundary, Vercel deploy, README, PLAN, REPORT and DEBUG-LOG.
-- On Nov 4 I got a grading checklist for the Oct 26 version. I am fixing the missing CORE items from it before the deadline. Done so far: Footer, ScrollToTop, full 404 page, Log in / Log out texts, logout redirect and Error Boundary texts.
+- On Nov 4 I got a grading checklist for the Oct 26 version. I am fixing the missing CORE items from it before the deadline. Done so far: Footer, ScrollToTop, full 404 page, Log in / Log out texts, logout redirect, Error Boundary texts, Login validation, and the product card details (discount, rating, stock badge, Add to cart).
 
 ## What I did not do
 
 - FULL and BONUS features: search, categories, sorting, pagination, reviews, related products, Orders, Profile, lazy routes, `@theme`, dark mode.
 - The cart and login are not saved, so a refresh empties the cart and logs the user out.
-- Still open as of Nov 4 (from the grading checklist): discount prices and card details, "Clear cart" button, exact validation texts on Checkout, and a Firefox check.
+- Still open as of Nov 4 (from the grading checklist): discount prices on the product page and in the cart, the "Clear cart" button, exact validation texts on Checkout, and a Firefox check.
 
 ## 3 problems I hit
 
@@ -178,11 +178,17 @@ Made a full 404 page with a heading, a short description and a "Go to catalog" l
 **Header.tsx and ErrorBoundary.tsx**
 Changed the texts to "Log in" and "Log out", and logging out now sends you to the home page. The Error Boundary now says "Something went wrong." with a "Reload" button.
 
+**Login.tsx**
+Added a "← Back to catalog" link, trimmed the username, and made the password need at least 6 characters, with "Password must be at least 6 characters" under the field.
+
+**types/index.ts, utils/price.ts and products.ts**
+Added `discountPercentage`, `rating` and an optional `brand` to the `Product` type. Made `utils/price.ts` with `discountedPrice` and `formatPrice`, so prices are worked out in one place and show like `$1,299.00`. The catalog now asks for 12 products with `limit` and `skip`.
+
+**ProductCard.tsx**
+The card now shows category and brand, the rating, the discounted price with the old price crossed out and a `−N%` badge, and a stock badge. Added an Add to cart button that is disabled at 0 stock, and `loading="lazy"` with width and height on the image. The button sits outside the link, so clicking it doesn't open the product page.
+
 ## Known limitations
 
 - The cart and the login are kept in memory only, so refreshing the page empties the cart and logs the user out.
 - Login and checkout are simulations: any non-empty login works and no payment is processed.
-- Only CORE features are implemented (no search, filters, sorting, reviews or orders page).
-
-**Login.tsx**
-Added a "← Back to catalog" link, trimmed the username, and made the password need at least 6 characters, with "Password must be at least 6 characters" under the field.
+- Only CORE features are implemented (no search, filters, sorting, pagination, reviews or orders page).
