@@ -1,11 +1,20 @@
-import type { ReactNode } from 'react'
+import { Outlet, useLocation } from 'react-router-dom'
+import ErrorBoundary from './ErrorBoundary'
+import Footer from './Footer'
 import Header from './Header'
 
-function Layout({ children }: { children: ReactNode }) {
+function Layout() {
+  const location = useLocation()
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="flex min-h-screen flex-col bg-gray-50">
       <Header />
-      <main className="mx-auto max-w-6xl p-4">{children}</main>
+      <main className="mx-auto w-full max-w-6xl flex-1 p-4">
+        <ErrorBoundary key={location.pathname}>
+          <Outlet />
+        </ErrorBoundary>
+      </main>
+      <Footer />
     </div>
   )
 }
