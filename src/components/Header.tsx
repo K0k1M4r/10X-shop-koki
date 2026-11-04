@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
 import { CartContext } from '../context/CartContext'
 
@@ -10,7 +10,13 @@ const linkClass = ({ isActive }: { isActive: boolean }) =>
 
 function Header() {
   const { user, logout } = useContext(AuthContext);
-  const { totalQuantity } = useContext(CartContext)
+  const { totalQuantity } = useContext(CartContext);
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    logout()
+    navigate('/')
+  }
   return (
     <header className="bg-blue-600">
       <nav className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-2 p-4">
@@ -30,12 +36,12 @@ function Header() {
           {user ? (
             <>
               <span className="text-white">Hi, {user}</span>
-              <button onClick={logout} className="text-blue-100 hover:text-white">
-                Logout
-              </button>
+              <button onClick={handleLogout} className="text-blue-100 hover:text-white">
+              Log out
+            </button>
             </>
           ) : (
-            <NavLink to="/login" className={linkClass}>Login</NavLink>
+            <NavLink to="/login" className={linkClass}>Log in</NavLink>
           )}
         </div>
       </nav>
