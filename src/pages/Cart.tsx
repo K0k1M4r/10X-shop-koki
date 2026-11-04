@@ -1,12 +1,12 @@
 import { useContext } from 'react'
 import { Link } from 'react-router-dom'
-import { CartContext } from '../context/CartContext'
 import QuantityPicker from '../components/QuantityPicker'
+import { CartContext } from '../context/CartContext'
+import { cartTotal, formatPrice, lineTotal, unitPrice } from '../utils/price'
 
 function Cart() {
-  
-  const { items, removeItem, setQuantity } = useContext(CartContext)
-  
+  const { items, removeItem, setQuantity, clearCart } = useContext(CartContext)
+
   if (items.length === 0) {
     return (
       <div>
@@ -19,8 +19,8 @@ function Cart() {
     )
   }
 
-  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  
+  const total = cartTotal(items)
+
   return (
     <div>
       <h1 className="mb-4 text-2xl font-bold">Cart</h1>
@@ -36,16 +36,23 @@ function Cart() {
               className="h-16 w-16 rounded bg-gray-100 object-contain"
             />
             <div className="min-w-40 flex-1">
-              <p className="font-semibold">{item.title}</p>
-              <p className="text-sm text-gray-500">${item.price} each</p>
+              <Link
+                to={`/products/${item.id}`}
+                className="font-semibold hover:underline"
+              >
+                {item.title}
+              </Link>
+              <p className="text-sm text-gray-500">
+                {formatPrice(unitPrice(item))} each
+              </p>
             </div>
             <QuantityPicker
-                value={item.quantity}
-                max={item.stock}
-                onChange={(quantity) => setQuantity(item.id, quantity)}
-              />
+              value={item.quantity}
+              max={item.stock}
+              onChange={(quantity) => setQuantity(item.id, quantity)}
+            />
             <p className="w-24 text-right font-semibold">
-              ${(item.price * item.quantity).toFixed(2)}
+              {formatPrice(lineTotal(item))}
             </p>
             <button
               onClick={() => removeItem(item.id)}
@@ -57,8 +64,24 @@ function Cart() {
         ))}
       </ul>
 
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
-        <p className="text-xl font-bold">Total: ${total.toFixed(2)}</p>
+      <div className="mt-6 space-y-2 rounded-lg bg-white p-4 shadow">
+        <div className="flex justify-between">
+          <span>Subtotal</span>
+          <span>{formatPrice(total)}</span>
+        </div>
+        <div className="flex justify-between text-xl font-bold">
+          <span>Total</span>
+          <span>{formatPrice(total)}</span>
+        </div>
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
+        <button
+          onClick={clearCart}
+          className="rounded border border-gray-300 bg-white px-4 py-2 hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-blue-300"
+        >
+          Clear cart
+        </button>
         <Link
           to="/checkout"
           className="rounded bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-2"
