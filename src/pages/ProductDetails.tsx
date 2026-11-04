@@ -1,22 +1,30 @@
 import { useContext, useEffect, useState } from 'react'
-import { CartContext } from '../context/CartContext'
 import { Link, useParams } from 'react-router-dom'
-import { fetchProduct } from '../api/products'
+import { fetchProduct, PRODUCT_NOT_FOUND } from '../api/products'
 import QuantityPicker from '../components/QuantityPicker'
+import { CartContext } from '../context/CartContext'
 import type { Product } from '../types'
-
+import { discountedPrice, formatPrice } from '../utils/price'
+import NotFound from './NotFound'
 
 function ProductDetails() {
   const { id } = useParams()
+
+  if (!id || !/^\d+$/.test(id)) return <NotFound />
+
+  return <ProductView key={id} id={id} />
+}
+
+function ProductView({ id }: { id: string }) {
+  const { items, addItem } = useContext(CartContext)
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [notFound, setNotFound] = useState(false)
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
-  const { addItem } = useContext(CartContext)
 
   useEffect(() => {
-    if (!id) return
     let ignore = false
 
     fetchProduct(id)
@@ -24,7 +32,9 @@ function ProductDetails() {
         if (!ignore) setProduct(data)
       })
       .catch((err: Error) => {
-        if (!ignore) setError(err.message)
+        if (ignore) return
+        if (err.message === PRODUCT_NOT_FOUND) setNotFound(true)
+        else setError(err.message)
       })
       .finally(() => {
         if (!ignore) setLoading(false)
@@ -36,13 +46,14 @@ function ProductDetails() {
   }, [id])
 
   if (loading) return <p>Loading product...</p>
+  if (notFound) return <NotFound />
 
   if (error || !product) {
     return (
       <div>
-        <p className="text-red-600">{error ?? 'Product not found'}</p>
+        <p className="text-red-600">{error ?? 'Something went wrong'}</p>
         <Link to="/" className="text-blue-600 underline">
-          Back to catalog
+          ← Back to catalog
         </Link>
       </div>
     )
@@ -50,11 +61,18 @@ function ProductDetails() {
 
   const mainImage = product.images[selectedImage] ?? product.thumbnail
   const outOfStock = product.stock === 0
+  const inCart = items.find((item) => item.id === product.id)?.quantity ?? 0
+  const available = product.stock - inCart
+  const soldOut = outOfStock || available <= 0
+  const qty = Math.min(quantity, Math.max(available, 1))
 
-
+  const percent = Math.round(product.discountPercentage)
+  const hasDiscount = percent >= 1
+  const finalPrice = discountedPrice(product.price, product.discountPercentage)
 
   const handleAddToCart = () => {
-    addItem(product, quantity)
+    addItem(product, qty)
+    setQuantity(1)
   }
 
   return (
@@ -95,25 +113,50 @@ function ProductDetails() {
           <h1 className="text-2xl font-bold">{product.title}</h1>
           <p className="mt-1 text-sm text-gray-500">{product.category}</p>
           <p className="mt-4">{product.description}</p>
-          <p className="mt-4 text-2xl font-semibold text-blue-600">
-            ${product.price}
-          </p>
+
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <span className="text-2xl font-semibold text-blue-600">
+              {formatPrice(finalPrice)}
+            </span>
+            {hasDiscount && (
+              <>
+                <span className="text-gray-400 line-through">
+                  {formatPrice(product.price)}
+                </span>
+                <span className="rounded bg-red-600 px-2 text-sm font-semibold text-white">
+                  −{percent}%
+                </span>
+              </>
+            )}
+          </div>
+
           <p className="mt-1 text-sm">
             {outOfStock ? 'Out of stock' : `${product.stock} in stock`}
           </p>
 
           <div className="mt-4">
-              <QuantityPicker
-                value={quantity}
-                max={product.stock}
-                onChange={setQuantity}
-                disabled={outOfStock}
-              />
+            <QuantityPicker
+              value={qty}
+              max={Math.max(available, 1)}
+              onChange={setQuantity}
+              disabled={soldOut}
+            />
           </div>
+
+          {inCart > 0 && available > 0 && (
+            <p className="mt-2 text-sm text-gray-600">
+              You have {inCart} in your cart. You can add up to {available} more.
+            </p>
+          )}
+          {!outOfStock && available <= 0 && (
+            <p className="mt-2 text-sm text-red-600">
+              You already have all {product.stock} available items in your cart.
+            </p>
+          )}
 
           <button
             onClick={handleAddToCart}
-            disabled={outOfStock}
+            disabled={soldOut}
             className="mt-4 w-full rounded bg-blue-600 p-3 font-semibold text-white hover:bg-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-300"
           >
             {outOfStock ? 'Out of stock' : 'Add to Cart'}
