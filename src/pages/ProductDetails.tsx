@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { fetchProduct, PRODUCT_NOT_FOUND } from '../api/products'
+import { ApiError } from '../api/ApiError'
+import { fetchProduct } from '../api/products'
 import QuantityPicker from '../components/QuantityPicker'
 import { CartContext } from '../context/CartContext'
 import type { Product } from '../types'
@@ -33,7 +34,7 @@ function ProductView({ id }: { id: string }) {
       })
       .catch((err: Error) => {
         if (ignore) return
-        if (err.message === PRODUCT_NOT_FOUND) setNotFound(true)
+        if (err instanceof ApiError && err.status === 404) setNotFound(true)
         else setError(err.message)
       })
       .finally(() => {

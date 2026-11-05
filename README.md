@@ -41,6 +41,11 @@ npm run build       # production build into dist/
 npm run lint        # ESLint
 ```
 
+## Test account
+
+Username `emilys`, password `emilyspass`. The login is a local simulation, so any username with a password of 6 or more characters also works.
+
+
 ## Project structure
 
 - `src/api` - functions that fetch data from DummyJSON
