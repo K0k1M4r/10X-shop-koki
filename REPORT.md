@@ -19,7 +19,7 @@
 
 - FULL and BONUS features: search, categories, sorting, pagination, reviews, related products, Orders, Profile, lazy routes, `@theme`, dark mode.
 - The cart and login are not saved, so a refresh empties the cart and logs the user out.
-- Still open as of Nov 4: a Firefox check.
+
 
 ## 3 problems I hit
 
@@ -195,6 +195,11 @@ Cart items now keep `discountPercentage`, and `price.ts` got `unitPrice`, `lineT
 
 **Checkout.tsx**
 Full name needs at least 3 characters and the address at least 5, with messages under the fields. An empty cart sends you to `/cart`. Place order greys out while submitting (a short 0.8 second wait), then it shows "Thank you! Your order has been placed." and empties the cart.
+
+## Test
+
+Tested in Brave and Firefox, including the 375px width: no sideways scrolling and the full shopping flow works. Fresh clone, install, typecheck and build tested in Brave.
+
 
 ## Known limitations
 
