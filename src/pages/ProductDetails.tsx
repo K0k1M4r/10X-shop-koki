@@ -1,8 +1,8 @@
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { fetchProduct } from '../api/products'
 import QuantityPicker from '../components/QuantityPicker'
-import { CartContext } from '../context/CartContext'
+import { useCart } from '../hooks/useCart'
 import { useFetch } from '../hooks/useFetch'
 import { isApiError } from '../utils/guards'
 import { discountedPrice, formatPrice } from '../utils/price'
@@ -18,7 +18,7 @@ function ProductDetails() {
 }
 
 function ProductView({ id }: { id: string }) {
-  const { items, addItem } = useContext(CartContext)
+  const { items, addItem } = useCart()
   const { state, error } = useFetch(fetchProduct, id)
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
