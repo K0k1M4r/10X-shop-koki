@@ -1,11 +1,10 @@
-import { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import QuantityPicker from '../components/QuantityPicker'
-import { CartContext } from '../context/CartContext'
+import { useCart } from '../hooks/useCart'
 import { cartTotal, formatPrice, lineTotal, unitPrice } from '../utils/price'
 
 function Cart() {
-  const { items, removeItem, setQuantity, clearCart } = useContext(CartContext)
+  const { items, removeItem, setQuantity, clearCart } = useCart()
 
   if (items.length === 0) {
     return (
@@ -78,7 +77,7 @@ function Cart() {
       <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
         <button
           onClick={() => {
-              if (window.confirm('Clear the cart? This cannot be undone.')) clearCart()
+            if (window.confirm('Clear the cart? This cannot be undone.')) clearCart()
           }}
           className="rounded border border-gray-300 bg-white px-4 py-2 hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-blue-300"
         >

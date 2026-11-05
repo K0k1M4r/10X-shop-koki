@@ -1,8 +1,8 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
 import { Link, Navigate } from 'react-router-dom'
-import { AuthContext } from '../context/AuthContext'
-import { CartContext } from '../context/CartContext'
+import { useAuth } from '../hooks/useAuth'
+import { useCart } from '../hooks/useCart'
 import type { CartItem, CheckoutFormValues } from '../types'
 import { cartTotal, formatPrice, lineTotal } from '../utils/price'
 
@@ -20,8 +20,8 @@ const fields: { name: keyof CheckoutFormValues; label: string; type: string }[] 
 ]
 
 function Checkout() {
-  const { user } = useContext(AuthContext)
-  const { items, clearCart } = useContext(CartContext)
+  const { user } = useAuth()
+  const { items, clearCart } = useCart()
   const [values, setValues] = useState<CheckoutFormValues>({
     fullName: '',
     email: '',
