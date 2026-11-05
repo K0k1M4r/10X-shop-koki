@@ -1,10 +1,9 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { fetchProduct } from '../api/products'
 import QuantityPicker from '../components/QuantityPicker'
 import { CartContext } from '../context/CartContext'
-import type { Product } from '../types'
-import type { AsyncState } from '../types/async'
+import { useFetch } from '../hooks/useFetch'
 import { isApiError } from '../utils/guards'
 import { discountedPrice, formatPrice } from '../utils/price'
 import NotFound from './NotFound'
@@ -19,36 +18,13 @@ function ProductDetails() {
 
 function ProductView({ id }: { id: string }) {
   const { items, addItem } = useContext(CartContext)
-  const [state, setState] = useState<AsyncState<Product>>({ status: 'loading' })
-  const [notFound, setNotFound] = useState(false)
+  const { state, error } = useFetch(fetchProduct, id)
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
 
-  useEffect(() => {
-    let ignore = false
-
-    fetchProduct(id)
-      .then((data) => {
-        if (!ignore) setState({ status: 'success', data })
-      })
-      .catch((err: unknown) => {
-        if (ignore) return
-        if (isApiError(err) && err.status === 404) {
-          setNotFound(true)
-        } else {
-          setState({
-            status: 'error',
-            message: err instanceof Error ? err.message : 'Something went wrong',
-          })
-        }
-      })
-
-    return () => {
-      ignore = true
-    }
-  }, [id])
-
-  if (notFound) return <NotFound />
+  if (state.status === 'error' && isApiError(error) && error.status === 404) {
+    return <NotFound />
+  }
 
   if (state.status === 'idle' || state.status === 'loading') {
     return <p>Loading product...</p>
