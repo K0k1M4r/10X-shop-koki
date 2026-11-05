@@ -10,6 +10,13 @@ import { discountedPrice, formatPrice } from '../utils/price'
 import { getStockStatus, STOCK_CLASSES, stockLabel } from '../utils/stock'
 import NotFound from './NotFound'
 
+type Tab = 'description' | 'details'
+
+const TABS: { id: Tab; label: string }[] = [
+  { id: 'description', label: 'Description' },
+  { id: 'details', label: 'Details' },
+]
+
 function ProductDetails() {
   const { id } = useParams()
 
@@ -24,6 +31,7 @@ function ProductView({ id }: { id: string }) {
   const { state, error } = useFetch(fetchProduct, id)
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
+  const [tab, setTab] = useState<Tab>('description')
 
   if (state.status === 'error' && isApiError(error) && error.status === 404) {
     return <NotFound />
@@ -99,7 +107,6 @@ function ProductView({ id }: { id: string }) {
         <div>
           <h1 className="text-2xl font-bold">{product.title}</h1>
           <p className="mt-1 text-sm text-gray-500">{product.category}</p>
-          <p className="mt-4">{product.description}</p>
 
           <div className="mt-4 flex flex-wrap items-center gap-3">
             <span className="text-2xl font-semibold text-blue-600">
@@ -150,6 +157,44 @@ function ProductView({ id }: { id: string }) {
           >
             {outOfStock ? 'Out of stock' : 'Add to Cart'}
           </button>
+
+          <div className="mt-6 border-t pt-4">
+            <div role="tablist" className="flex gap-2">
+              {TABS.map((item) => (
+                <button
+                  key={item.id}
+                  role="tab"
+                  aria-selected={tab === item.id}
+                  onClick={() => setTab(item.id)}
+                  className={`rounded px-3 py-1 text-sm font-medium focus-visible:ring-2 focus-visible:ring-blue-300 ${
+                    tab === item.id
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-100 hover:bg-gray-200'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+            <div role="tabpanel" className="mt-3 text-sm">
+              {tab === 'description' ? (
+                <p>{product.description}</p>
+              ) : (
+                <dl className="grid max-w-xs grid-cols-2 gap-x-4 gap-y-1">
+                  <dt className="text-gray-500">Category</dt>
+                  <dd>{product.category}</dd>
+                  <dt className="text-gray-500">Brand</dt>
+                  <dd>{product.brand ?? '—'}</dd>
+                  <dt className="text-gray-500">Rating</dt>
+                  <dd>★ {product.rating.toFixed(1)}</dd>
+                  <dt className="text-gray-500">Stock</dt>
+                  <dd>{product.stock}</dd>
+                  <dt className="text-gray-500">Discount</dt>
+                  <dd>{percent}%</dd>
+                </dl>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
