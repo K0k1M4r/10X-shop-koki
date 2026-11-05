@@ -4,6 +4,7 @@ import { fetchProduct } from '../api/products'
 import QuantityPicker from '../components/QuantityPicker'
 import { useCart } from '../hooks/useCart'
 import { useFetch } from '../hooks/useFetch'
+import { useToast } from '../hooks/useToast'
 import { isApiError } from '../utils/guards'
 import { discountedPrice, formatPrice } from '../utils/price'
 import { getStockStatus, STOCK_CLASSES, stockLabel } from '../utils/stock'
@@ -19,6 +20,7 @@ function ProductDetails() {
 
 function ProductView({ id }: { id: string }) {
   const { items, addItem } = useCart()
+  const { showToast } = useToast()
   const { state, error } = useFetch(fetchProduct, id)
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
@@ -56,6 +58,7 @@ function ProductView({ id }: { id: string }) {
 
   const handleAddToCart = () => {
     addItem(product, qty)
+    showToast('Added to cart ✓')
     setQuantity(1)
   }
 
