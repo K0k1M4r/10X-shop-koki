@@ -77,7 +77,9 @@ function Cart() {
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
         <button
-          onClick={clearCart}
+          onClick={() => {
+              if (window.confirm('Clear the cart? This cannot be undone.')) clearCart()
+          }}
           className="rounded border border-gray-300 bg-white px-4 py-2 hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-blue-300"
         >
           Clear cart

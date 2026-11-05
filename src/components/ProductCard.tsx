@@ -67,7 +67,7 @@ function ProductCard({ product }: { product: Product }) {
         disabled={outOfStock}
         className="m-3 mt-0 rounded bg-blue-600 p-2 font-semibold text-white hover:bg-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-300"
       >
-        Add to cart
+        {outOfStock ? 'Out of stock' : 'Add to cart'}
       </button>
     </div>
   )

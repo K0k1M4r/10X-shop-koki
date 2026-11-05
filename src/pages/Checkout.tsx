@@ -86,16 +86,13 @@ function Checkout() {
     const city = values.city.trim()
     const newErrors: Partial<CheckoutFormValues> = {}
 
-    if (!fullName) newErrors.fullName = 'Full name is required'
-    else if (fullName.length < 3)
+    if (!fullName || fullName.length < 3)
       newErrors.fullName = 'Full name must be at least 3 characters'
 
-    if (!email) newErrors.email = 'Email is required'
-    else if (!/^\S+@\S+\.\S+$/.test(email))
+    if (!email || !/^\S+@\S+\.\S+$/.test(email))
       newErrors.email = 'Please enter a valid email address'
 
-    if (!address) newErrors.address = 'Address is required'
-    else if (address.length < 5)
+    if (!address || address.length < 5)
       newErrors.address = 'Address must be at least 5 characters'
 
     if (!city) newErrors.city = 'City is required'

@@ -82,7 +82,7 @@ function Login() {
           type="submit"
           className="w-full rounded bg-blue-600 p-2 font-semibold text-white hover:bg-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-2"
         >
-          Log in
+          Log In
         </button>
       </form>
     </div>

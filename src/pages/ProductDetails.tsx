@@ -130,8 +130,20 @@ function ProductView({ id }: { id: string }) {
             )}
           </div>
 
-          <p className="mt-1 text-sm">
-            {outOfStock ? 'Out of stock' : `${product.stock} in stock`}
+          <p
+            className={`mt-1 text-sm font-medium ${
+              outOfStock
+                ? 'text-red-600'
+                : product.stock <= 5
+                  ? 'text-orange-500'
+                  : 'text-green-600'
+            }`}
+          >
+            {outOfStock
+              ? 'Out of stock'
+              : product.stock <= 5
+                ? `Only ${product.stock} left!`
+                : 'In stock'}
           </p>
 
           <div className="mt-4">
