@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import ErrorBoundary from './ErrorBoundary'
 import Footer from './Footer'
@@ -11,7 +12,9 @@ function Layout() {
       <Header />
       <main className="mx-auto w-full max-w-6xl flex-1 p-4">
         <ErrorBoundary key={location.pathname}>
-          <Outlet />
+          <Suspense fallback={<p>Loading...</p>}>
+            <Outlet />
+          </Suspense>
         </ErrorBoundary>
       </main>
       <Footer />

@@ -1,12 +1,14 @@
+import { lazy } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout'
 import ScrollToTop from './components/ScrollToTop'
-import Cart from './pages/Cart'
-import Catalog from './pages/Catalog'
-import Checkout from './pages/Checkout'
-import Login from './pages/Login'
 import NotFound from './pages/NotFound'
-import ProductDetails from './pages/ProductDetails'
+
+const Catalog = lazy(() => import('./pages/Catalog'))
+const Login = lazy(() => import('./pages/Login'))
+const ProductDetails = lazy(() => import('./pages/ProductDetails'))
+const Cart = lazy(() => import('./pages/Cart'))
+const Checkout = lazy(() => import('./pages/Checkout'))
 
 function App() {
   return (
