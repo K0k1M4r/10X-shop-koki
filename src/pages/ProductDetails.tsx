@@ -6,6 +6,7 @@ import { CartContext } from '../context/CartContext'
 import { useFetch } from '../hooks/useFetch'
 import { isApiError } from '../utils/guards'
 import { discountedPrice, formatPrice } from '../utils/price'
+import { getStockStatus, STOCK_CLASSES, stockLabel } from '../utils/stock'
 import NotFound from './NotFound'
 
 function ProductDetails() {
@@ -43,7 +44,7 @@ function ProductView({ id }: { id: string }) {
 
   const product = state.data
   const mainImage = product.images[selectedImage] ?? product.thumbnail
-  const outOfStock = product.stock === 0
+  const outOfStock = getStockStatus(product) === 'out-of-stock'
   const inCart = items.find((item) => item.id === product.id)?.quantity ?? 0
   const available = product.stock - inCart
   const soldOut = outOfStock || available <= 0
@@ -114,19 +115,9 @@ function ProductView({ id }: { id: string }) {
           </div>
 
           <p
-            className={`mt-1 text-sm font-medium ${
-              outOfStock
-                ? 'text-red-600'
-                : product.stock <= 5
-                  ? 'text-orange-500'
-                  : 'text-green-600'
-            }`}
+            className={`mt-1 text-sm font-medium ${STOCK_CLASSES[getStockStatus(product)]}`}
           >
-            {outOfStock
-              ? 'Out of stock'
-              : product.stock <= 5
-                ? `Only ${product.stock} left!`
-                : 'In stock'}
+            {stockLabel(product)}
           </p>
 
           <div className="mt-4">
