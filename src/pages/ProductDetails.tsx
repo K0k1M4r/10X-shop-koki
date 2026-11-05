@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ApiError } from '../api/ApiError'
 import { fetchProduct } from '../api/products'
 import QuantityPicker from '../components/QuantityPicker'
 import { CartContext } from '../context/CartContext'
 import type { Product } from '../types'
+import { isApiError } from '../utils/guards'
 import { discountedPrice, formatPrice } from '../utils/price'
 import NotFound from './NotFound'
 
@@ -32,10 +32,10 @@ function ProductView({ id }: { id: string }) {
       .then((data) => {
         if (!ignore) setProduct(data)
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         if (ignore) return
-        if (err instanceof ApiError && err.status === 404) setNotFound(true)
-        else setError(err.message)
+        if (isApiError(err) && err.status === 404) setNotFound(true)
+        else setError(err instanceof Error ? err.message : 'Something went wrong')
       })
       .finally(() => {
         if (!ignore) setLoading(false)

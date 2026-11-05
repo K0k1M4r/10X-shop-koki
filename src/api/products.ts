@@ -1,4 +1,5 @@
 import type { Product, ProductsResponse } from '../types'
+import { isProduct } from '../utils/guards'
 import { ApiError } from './ApiError'
 
 // am orze uech vkitxot
@@ -18,5 +19,9 @@ export async function fetchProduct(id: string): Promise<Product> {
   if (!response.ok) {
     throw new ApiError(response.status, 'Failed to load product')
   }
-  return response.json()
+  const data: unknown = await response.json()
+  if (!isProduct(data)) {
+    throw new ApiError(500, 'Received invalid product data')
+  }
+  return data
 }
