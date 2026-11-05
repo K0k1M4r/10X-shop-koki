@@ -4,6 +4,7 @@ import { fetchProduct } from '../api/products'
 import QuantityPicker from '../components/QuantityPicker'
 import { CartContext } from '../context/CartContext'
 import type { Product } from '../types'
+import type { AsyncState } from '../types/async'
 import { isApiError } from '../utils/guards'
 import { discountedPrice, formatPrice } from '../utils/price'
 import NotFound from './NotFound'
@@ -18,9 +19,7 @@ function ProductDetails() {
 
 function ProductView({ id }: { id: string }) {
   const { items, addItem } = useContext(CartContext)
-  const [product, setProduct] = useState<Product | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [state, setState] = useState<AsyncState<Product>>({ status: 'loading' })
   const [notFound, setNotFound] = useState(false)
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
@@ -30,15 +29,18 @@ function ProductView({ id }: { id: string }) {
 
     fetchProduct(id)
       .then((data) => {
-        if (!ignore) setProduct(data)
+        if (!ignore) setState({ status: 'success', data })
       })
       .catch((err: unknown) => {
         if (ignore) return
-        if (isApiError(err) && err.status === 404) setNotFound(true)
-        else setError(err instanceof Error ? err.message : 'Something went wrong')
-      })
-      .finally(() => {
-        if (!ignore) setLoading(false)
+        if (isApiError(err) && err.status === 404) {
+          setNotFound(true)
+        } else {
+          setState({
+            status: 'error',
+            message: err instanceof Error ? err.message : 'Something went wrong',
+          })
+        }
       })
 
     return () => {
@@ -46,13 +48,16 @@ function ProductView({ id }: { id: string }) {
     }
   }, [id])
 
-  if (loading) return <p>Loading product...</p>
   if (notFound) return <NotFound />
 
-  if (error || !product) {
+  if (state.status === 'idle' || state.status === 'loading') {
+    return <p>Loading product...</p>
+  }
+
+  if (state.status === 'error') {
     return (
       <div>
-        <p className="text-red-600">{error ?? 'Something went wrong'}</p>
+        <p className="text-red-600">{state.message}</p>
         <Link to="/" className="text-blue-600 underline">
           ← Back to catalog
         </Link>
@@ -60,6 +65,7 @@ function ProductView({ id }: { id: string }) {
     )
   }
 
+  const product = state.data
   const mainImage = product.images[selectedImage] ?? product.thumbnail
   const outOfStock = product.stock === 0
   const inCart = items.find((item) => item.id === product.id)?.quantity ?? 0
