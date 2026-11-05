@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom'
 import QuantityPicker from '../components/QuantityPicker'
 import { useCart } from '../hooks/useCart'
+import { useToast } from '../hooks/useToast'
 import { cartTotal, formatPrice, lineTotal, unitPrice } from '../utils/price'
 
 function Cart() {
   const { items, removeItem, setQuantity, clearCart } = useCart()
+  const { showToast } = useToast()
 
   if (items.length === 0) {
     return (
@@ -54,7 +56,10 @@ function Cart() {
               {formatPrice(lineTotal(item))}
             </p>
             <button
-              onClick={() => removeItem(item.id)}
+              onClick={() => {
+                removeItem(item.id)
+                showToast('Removed from cart')
+              }}
               className="text-red-600 hover:underline"
             >
               Remove
