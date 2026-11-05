@@ -1,25 +1,34 @@
-import { useContext } from 'react'
 import { Link } from 'react-router-dom'
-import { CartContext } from '../context/CartContext'
+import { useCart } from '../hooks/useCart'
+import { useToast } from '../hooks/useToast'
 import type { Product } from '../types'
 import { discountedPrice, formatPrice } from '../utils/price'
+import { getStockStatus, stockLabel } from '../utils/stock'
+import type { StockStatus } from '../utils/stock'
+
+const STOCK_BADGE: Record<StockStatus, string> = {
+  'in-stock': 'bg-green-100 text-green-800',
+  'low-stock': 'bg-amber-100 text-amber-800',
+  'out-of-stock': 'bg-red-100 text-red-800',
+}
 
 function ProductCard({ product }: { product: Product }) {
-  const { addItem } = useContext(CartContext)
+  const { items, addItem } = useCart()
+  const { showToast } = useToast()
 
-  const outOfStock = product.stock === 0
+  const outOfStock = getStockStatus(product) === 'out-of-stock'
+  const inCart = items.find((item) => item.id === product.id)?.quantity ?? 0
   const percent = Math.round(product.discountPercentage)
   const hasDiscount = percent >= 1
   const finalPrice = discountedPrice(product.price, product.discountPercentage)
 
-  let stockLabel = 'In stock'
-  let stockClass = 'bg-green-100 text-green-800'
-  if (outOfStock) {
-    stockLabel = 'Out of stock'
-    stockClass = 'bg-red-100 text-red-800'
-  } else if (product.stock <= 5) {
-    stockLabel = `Only ${product.stock} left`
-    stockClass = 'bg-amber-100 text-amber-800'
+  function handleAdd() {
+    if (inCart >= product.stock) {
+      showToast('All available stock is already in your cart')
+      return
+    }
+    addItem(product, 1)
+    showToast('Added to cart ✓')
   }
 
   return (
@@ -56,14 +65,14 @@ function ProductCard({ product }: { product: Product }) {
             )}
           </div>
           <span
-            className={`mt-2 inline-block rounded px-2 py-0.5 text-xs font-medium ${stockClass}`}
+            className={`mt-2 inline-block rounded px-2 py-0.5 text-xs font-medium ${STOCK_BADGE[getStockStatus(product)]}`}
           >
-            {stockLabel}
+            {stockLabel(product)}
           </span>
         </div>
       </Link>
       <button
-        onClick={() => addItem(product, 1)}
+        onClick={handleAdd}
         disabled={outOfStock}
         className="m-3 mt-0 rounded bg-blue-600 p-2 font-semibold text-white hover:bg-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-300"
       >
