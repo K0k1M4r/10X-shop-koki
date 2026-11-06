@@ -1,1 +1,64 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Dark theme: re-colour the light utilities used across the app */
+.dark {
+  color-scheme: dark;
+  color: #e5e7eb;
+}
+
+.dark .bg-gray-50 {
+  background-color: #111827;
+}
+
+.dark .bg-white {
+  background-color: #1f2937;
+}
+
+.dark .bg-gray-100 {
+  background-color: #374151;
+}
+
+.dark .bg-gray-200 {
+  background-color: #4b5563;
+}
+
+.dark .hover\:bg-gray-100:hover,
+.dark .hover\:bg-gray-200:hover {
+  background-color: #4b5563;
+}
+
+.dark .border-gray-200,
+.dark .border-gray-300 {
+  border-color: #4b5563;
+}
+
+.dark .text-gray-400,
+.dark .text-gray-500 {
+  color: #9ca3af;
+}
+
+.dark .text-gray-600 {
+  color: #d1d5db;
+}
+
+.dark .text-blue-600 {
+  color: #60a5fa;
+}
+
+.dark .text-red-600 {
+  color: #f87171;
+}
+
+.dark .text-green-600,
+.dark .text-green-700 {
+  color: #4ade80;
+}
+
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: #111827;
+  color: #f3f4f6;
+}
