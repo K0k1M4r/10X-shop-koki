@@ -79,13 +79,6 @@ function ProductContent({ product }: { product: Product }) {
     () => [...localReviews, ...apiReviews],
     [localReviews, apiReviews],
   )
-  const averageRating = useMemo(
-    () =>
-      reviews.length === 0
-        ? product.rating
-        : reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length,
-    [reviews, product.rating],
-  )
 
   const mainImage = product.images[selectedImage] ?? product.thumbnail
   const outOfStock = getStockStatus(product) === 'out-of-stock'
@@ -154,7 +147,7 @@ function ProductContent({ product }: { product: Product }) {
           <h1 className="text-2xl font-bold">{product.title}</h1>
           <p className="mt-1 text-sm text-gray-500">{product.category}</p>
           <p className="mt-1 text-sm">
-            ★ {averageRating.toFixed(1)} · {reviews.length}{' '}
+            ★ {product.rating.toFixed(1)} · {reviews.length}{' '}
             {reviews.length === 1 ? 'review' : 'reviews'}
           </p>
 
