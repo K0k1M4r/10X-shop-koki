@@ -6,6 +6,7 @@ import NotFound from './pages/NotFound'
 
 const Catalog = lazy(() => import('./pages/Catalog'))
 const Login = lazy(() => import('./pages/Login'))
+const Register = lazy(() => import('./pages/Register'))
 const ProductDetails = lazy(() => import('./pages/ProductDetails'))
 const Cart = lazy(() => import('./pages/Cart'))
 const Checkout = lazy(() => import('./pages/Checkout'))
@@ -18,6 +19,7 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Catalog />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/products/:id" element={<ProductDetails />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />

@@ -15,6 +15,7 @@ function Login() {
     password: '',
   })
   const [errors, setErrors] = useState<Partial<LoginFormValues>>({})
+  const [formError, setFormError] = useState('')
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     setValues({ ...values, [e.target.name]: e.target.value })
@@ -34,9 +35,13 @@ function Login() {
     }
 
     setErrors(newErrors)
+    setFormError('')
     if (Object.keys(newErrors).length > 0) return
 
-    login(username)
+    if (!login(username, values.password)) {
+      setFormError('Invalid username or password')
+      return
+    }
     navigate(from, { replace: true })
   }
 
@@ -78,6 +83,7 @@ function Login() {
             <p className="mt-1 text-sm text-red-600">{errors.password}</p>
           )}
         </div>
+        {formError && <p className="text-sm text-red-600">{formError}</p>}
         <button
           type="submit"
           className="w-full rounded bg-blue-600 p-2 font-semibold text-white hover:bg-blue-700 focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-2"
@@ -85,6 +91,12 @@ function Login() {
           Log In
         </button>
       </form>
+      <p className="mt-4 text-sm">
+        Don't have an account?{' '}
+        <Link to="/register" state={{ from }} className="text-blue-600 underline">
+          Register
+        </Link>
+      </p>
     </div>
   )
 }
