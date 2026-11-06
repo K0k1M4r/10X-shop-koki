@@ -28,10 +28,10 @@
 
 | Metric | Value |
 | --- | --- |
-| Commits on `main` | 95 |
+| Commits on `main` | 103 |
 | Different days with commits | 8 |
-| Merged pull requests | 18 |
-| GitHub Issues (total / closed) | 22 / 19 |
+| Merged pull requests | 22 |
+| GitHub Issues (total / closed) | 22 / 20 |
 | Lighthouse (mobile, live site, final version) | Performance 85, Accessibility 95, Best Practices 96, SEO 83 |
 | Main JavaScript bundle | 267.26 kB (85.14 kB gzipped) |
 | CSS | 18.59 kB (4.46 kB gzipped) |
@@ -282,7 +282,7 @@ Wrote the three weekly progress notes in `docs/progress`, with estimated hours b
 ## Known limitations
 
 - The cart, the promo code and the login are kept in memory only, so refreshing the page empties the cart and logs the user out. The theme and the reviews I add are saved in localStorage.
-- Login and checkout are simulations: any login with a 6 character password works and no payment is processed.
+- Login, register and checkout are simulations: accounts are kept in the browser (localStorage) and no payment is processed.
 - Search and category filter cannot be combined.
 - The dark theme uses colour rules in `index.css`, so a new colour class would need a matching rule there.
 - Not implemented: orders page, profile page, Formik and Yup, a demo video.

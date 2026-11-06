@@ -13,7 +13,7 @@ CORE
 - Product details page with image gallery, discounted price, quantity picker, stock limit message and Add to Cart
 - Invalid product ids (like `/products/abc` or a product that does not exist) show the 404 page
 - Shopping cart with quantity changes, remove, Clear cart, Subtotal and Total, shared through React Context
-- Simulated login (local React Context, no real authentication) with username trim and a 6 character password minimum
+- Simulated login and register (local React Context, accounts saved in localStorage, no real authentication) with username trim and a 6 character password minimum
 - Checkout form with validation (name 3+ characters, valid email, address 5+ characters, city) and a local order confirmation (no real payment)
 - Guests are redirected from Checkout to Login and returned after logging in; an empty cart sends Checkout back to the Cart
 - Responsive layout (375px to desktop) with hover, focus and disabled states
@@ -58,7 +58,7 @@ npm run lint        # ESLint
 
 ## Test account
 
-Username `emilys`, password `emilyspass`. The login is a local simulation, so any username with a password of 6 or more characters also works.
+Username `emilys`, password `emilyspass`. You can also create your own account on the Register page. The login is a local simulation: accounts are saved in the browser (localStorage).
 
 ## Project structure
 
@@ -77,7 +77,7 @@ The Catalog page reads its search, category, sort and page from the URL. It call
 ## Known limitations
 
 - The cart, the promo code and the login are kept in memory only, so refreshing the page empties the cart and logs the user out (the theme and the reviews you add are the exception: they are saved in localStorage)
-- Login and checkout are simulations: any login with a 6 character password works and no payment is processed
+- Login, register and checkout are simulations: accounts are kept in the browser (localStorage) and no payment is processed.
 - Search and category filter cannot be combined, because the DummyJSON API does not support both in one request
 - The dark theme is done with colour rules in `index.css` under a `dark` class, not with `dark:` classes in every component, so a new colour class would need a matching rule there
 - Not implemented: orders page, profile page, Formik and Yup, a demo video
