@@ -14,23 +14,24 @@
 - Planned: responsive, hover/focus states, errors, deploy, docs, submit.
 - Delivered: responsive fixes, focus and disabled states, Error Boundary, Vercel deploy, README, PLAN, REPORT and DEBUG-LOG.
 - On Nov 4 I got a grading checklist for the Oct 26 version. I fixed the missing CORE items from it: Footer, ScrollToTop, full 404 page, Log in / Log out texts, Login validation, product card details, discounts on the product page and cart, Clear cart, and the Checkout validation and thank-you text. Then I matched the exact error texts to Appendix A of the PRD.
-- On Nov 5 and Nov 6 I started on FULL items, each with a GitHub Issue, a branch and a merged pull request: ApiError, type guards, AsyncState, a generic useFetch hook, literal unions and utility types, custom hooks, lazy routes, toast notifications, product page tabs, catalog search, category filter, sorting and pagination, and promo code with shipping. I also added COMPATIBILITY.md, weekly progress notes, and a WBS with risks and a definition of done in PLAN.md.
+- On Nov 5 and Nov 6 I started on FULL items, each with a GitHub Issue, a branch and a merged pull request: ApiError, type guards, AsyncState, a generic useFetch hook, literal unions and utility types, custom hooks, lazy routes, toast notifications, product page tabs, catalog search, category filter, sorting and pagination, promo code with shipping, product reviews and a dark and light theme. I also added COMPATIBILITY.md, weekly progress notes, and a WBS with risks and a definition of done in PLAN.md.
 
 ## What I did not do
 
-- Dark theme (Issue #9), product reviews (#15), a measured React.memo with the Profiler (#17), the demo video (#22).
+- A measured React.memo with the Profiler (Issue #17) and the demo video (Issue #22).
 - Orders page, Profile page, Formik and Yup, a reducer-based cart and saving the cart in localStorage.
 - A Lighthouse run before my changes. I only have a run on the final version, so the table below has no "before" column.
 - The cart, the promo code and the login are not saved, so a refresh empties the cart and logs the user out.
+- The dark theme uses colour rules in `index.css` instead of `dark:` classes in every component. It works on every page, but it is the quick approach.
 
 ## Metrics
 
 | Metric | Value |
 | --- | --- |
-| Commits on `main` | 87 |
+| Commits on `main` | 95 |
 | Different days with commits | 8 |
-| Merged pull requests | 14 |
-| GitHub Issues (total / closed) | 22 / 17 |
+| Merged pull requests | 18 |
+| GitHub Issues (total / closed) | 22 / 19 |
 | Lighthouse (mobile, live site, final version) | Performance 85, Accessibility 95, Best Practices 96, SEO 83 |
 | Main JavaScript bundle | 267.26 kB (85.14 kB gzipped) |
 | CSS | 18.59 kB (4.46 kB gzipped) |
@@ -265,12 +266,19 @@ The catalog has a search box, a category select, a sort select and page buttons.
 **Promo code and shipping (Issue #11)**
 The Cart has a promo code box. `10X10` in any letter case takes 10% off, and anything else shows "Invalid promo code". Shipping is $10 and free from $100. The cart shows Subtotal, Discount, Shipping and Total, and Checkout uses the same total from `price.ts`.
 
+**Product reviews (Issue #15)**
+Added a Reviews tab on the product page. It shows the reviews that come with the product from the API and the ones I add myself, plus a "★ average · N reviews" line. The review form (`ReviewForm.tsx`) needs a rating and a comment of at least 10 characters, shows the exact error texts from Appendix A, and then shows a "Review added ✓" toast. New reviews are saved in localStorage under `shop_reviews`, and the reviewer name is the logged-in user or "Guest". Reviews from the API are checked with an `isReview` type guard, because they come in as `unknown`.
+
+**Dark and light theme (Issue #9)**
+Added a toggle button in the header and a `useTheme` hook. The hook adds or removes a `dark` class on the page and saves the choice in localStorage under `shop_theme`, so a refresh keeps it. To save time I did the dark colours as rules in `index.css` that re-colour the light classes I already use, instead of adding `dark:` classes to every component. It works on all pages, and the cleaner long-term way would be `dark:` classes in each component.
+
 **Progress notes (Issue #18)**
 Wrote the three weekly progress notes in `docs/progress`, with estimated hours because I did not track my time.
 
 ## Known limitations
 
-- The cart, the promo code and the login are kept in memory only, so refreshing the page empties the cart and logs the user out.
+- The cart, the promo code and the login are kept in memory only, so refreshing the page empties the cart and logs the user out. The theme and the reviews I add are saved in localStorage.
 - Login and checkout are simulations: any login with a 6 character password works and no payment is processed.
 - Search and category filter cannot be combined.
-- Not implemented: dark theme, product reviews, orders page, profile page.
+- The dark theme uses colour rules in `index.css`, so a new colour class would need a matching rule there.
+- Not implemented: orders page, profile page, Formik and Yup, a demo video.
