@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Link } from 'react-router-dom'
 import { useCart } from '../hooks/useCart'
 import { useToast } from '../hooks/useToast'
@@ -82,4 +83,4 @@ function ProductCard({ product }: { product: Product }) {
   )
 }
 
-export default ProductCard
+export default memo(ProductCard)
