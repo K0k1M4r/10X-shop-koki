@@ -4,7 +4,7 @@ import { Link, Navigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useCart } from '../hooks/useCart'
 import type { CartItem, CheckoutFormValues } from '../types'
-import { cartTotal, formatPrice, lineTotal } from '../utils/price'
+import { cartTotals, formatPrice, lineTotal } from '../utils/price'
 
 interface Order {
   items: CartItem[]
@@ -21,7 +21,7 @@ const fields: { name: keyof CheckoutFormValues; label: string; type: string }[] 
 
 function Checkout() {
   const { user } = useAuth()
-  const { items, clearCart } = useCart()
+  const { items, promoCode, clearCart } = useCart()
   const [values, setValues] = useState<CheckoutFormValues>({
     fullName: '',
     email: '',
@@ -70,7 +70,7 @@ function Checkout() {
     return <Navigate to="/cart" replace />
   }
 
-  const total = cartTotal(items)
+  const { total } = cartTotals(items, promoCode)
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     setValues({ ...values, [e.target.name]: e.target.value })
