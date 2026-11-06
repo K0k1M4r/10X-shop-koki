@@ -26,9 +26,11 @@ FULL (added after CORE)
 - Skeleton cards while loading, a Retry button on errors, and AbortController so old requests are cancelled
 - Toast messages for add to cart, remove from cart and promo code
 - Promo code `10X10` (10 percent off) and shipping ($10, free from $100) with Subtotal, Discount, Shipping and Total lines
-- Product page tabs (Description and Details)
+- Product page tabs (Description, Details and Reviews)
+- Product reviews: reviews from the API plus reviews added by the user with a form (rating and comment validation, a toast, saved in localStorage under `shop_reviews`), and an average rating line
+- Dark and light theme toggle in the header, saved in localStorage under `shop_theme`
 - Lazy-loaded routes with React.lazy and Suspense
-- Custom hooks (`useCart`, `useAuth`, `useToast`, `useFetch`)
+- Custom hooks (`useCart`, `useAuth`, `useToast`, `useFetch`, `useTheme`)
 - TypeScript: `ApiError` class, type guards, an `AsyncState` discriminated union, a generic `useFetch<T, A>` hook, a literal union for stock status and utility types (`Pick`, `Record`)
 
 ## Tech stack
@@ -61,23 +63,24 @@ Username `emilys`, password `emilyspass`. The login is a local simulation, so an
 ## Project structure
 
 - `src/api` - `products.ts` (fetch functions for DummyJSON) and `ApiError.ts`
-- `src/types` - TypeScript types for products, cart items, forms and `AsyncState`
-- `src/utils` - price and shipping helpers (`price.ts`), stock status (`stock.ts`) and type guards (`guards.ts`)
+- `src/types` - TypeScript types for products, cart items, forms, reviews and `AsyncState`
+- `src/utils` - price and shipping helpers (`price.ts`), stock status (`stock.ts`), review helpers (`reviews.ts`) and type guards (`guards.ts`)
 - `src/context` - AuthContext, CartContext and the toast context and provider
-- `src/hooks` - `useAuth`, `useCart`, `useToast` and `useFetch`
-- `src/components` - Layout, Header, Footer, ScrollToTop, ProductCard, ProductGrid, ProductSkeleton, Pagination, QuantityPicker, ErrorBoundary
+- `src/hooks` - `useAuth`, `useCart`, `useToast`, `useFetch` and `useTheme`
+- `src/components` - Layout, Header, Footer, ScrollToTop, ProductCard, ProductGrid, ProductSkeleton, Pagination, QuantityPicker, ReviewForm, ErrorBoundary
 - `src/pages` - Catalog, ProductDetails, Cart, Checkout, Login, NotFound
 
 ## Data flow
 
-The Catalog page reads its search, category, sort and page from the URL. It calls `fetchProducts` in `src/api/products.ts`, which builds the DummyJSON request, and keeps the result as an `AsyncState` (loading, success or error). The Product page loads one product through the generic `useFetch` hook, and `fetchProduct` checks the data with the `isProduct` type guard. AuthContext holds the logged-in username and CartContext holds the cart items and the promo code, and pages read them through `useAuth` and `useCart`. Add to Cart calls `addItem`, which updates the header badge and the Cart page, and the toast provider shows a short message. Prices, shipping, discounts and totals are calculated in one place, `src/utils/price.ts`, so the card, product page, cart and checkout always agree. Checkout reads the cart and the user, saves the order in state when the form is valid, then calls `clearCart`.
+The Catalog page reads its search, category, sort and page from the URL. It calls `fetchProducts` in `src/api/products.ts`, which builds the DummyJSON request, and keeps the result as an `AsyncState` (loading, success or error). The Product page loads one product through the generic `useFetch` hook, and `fetchProduct` checks the data with the `isProduct` type guard. Its Reviews tab joins the reviews that come with the product with the ones saved in localStorage, and the review form adds a new one. AuthContext holds the logged-in username and CartContext holds the cart items and the promo code, and pages read them through `useAuth` and `useCart`. Add to Cart calls `addItem`, which updates the header badge and the Cart page, and the toast provider shows a short message. Prices, shipping, discounts and totals are calculated in one place, `src/utils/price.ts`, so the card, product page, cart and checkout always agree. Checkout reads the cart and the user, saves the order in state when the form is valid, then calls `clearCart`. The theme toggle in the header uses `useTheme`, which adds or removes a `dark` class on the page and saves the choice.
 
 ## Known limitations
 
-- The cart, the promo code and the login are kept in memory only, so refreshing the page empties the cart and logs the user out
+- The cart, the promo code and the login are kept in memory only, so refreshing the page empties the cart and logs the user out (the theme and the reviews you add are the exception: they are saved in localStorage)
 - Login and checkout are simulations: any login with a 6 character password works and no payment is processed
 - Search and category filter cannot be combined, because the DummyJSON API does not support both in one request
-- Not implemented: dark theme, product reviews, orders page, profile page, Formik and Yup, a demo video
+- The dark theme is done with colour rules in `index.css` under a `dark` class, not with `dark:` classes in every component, so a new colour class would need a matching rule there
+- Not implemented: orders page, profile page, Formik and Yup, a demo video
 
 ## Documentation
 
