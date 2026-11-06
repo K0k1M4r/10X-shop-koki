@@ -13,13 +13,30 @@
 **Week 3 (Oct 31 - Nov 6)**
 - Planned: responsive, hover/focus states, errors, deploy, docs, submit.
 - Delivered: responsive fixes, focus and disabled states, Error Boundary, Vercel deploy, README, PLAN, REPORT and DEBUG-LOG.
-- On Nov 4 I got a grading checklist for the Oct 26 version. I fixed the missing CORE items from it before the deadline: Footer, ScrollToTop, full 404 page, Log in / Log out texts, Login validation, product card details, discounts on the product page and cart, Clear cart, and the Checkout validation and thank-you text.
+- On Nov 4 I got a grading checklist for the Oct 26 version. I fixed the missing CORE items from it: Footer, ScrollToTop, full 404 page, Log in / Log out texts, Login validation, product card details, discounts on the product page and cart, Clear cart, and the Checkout validation and thank-you text. Then I matched the exact error texts to Appendix A of the PRD.
+- On Nov 5 and Nov 6 I started on FULL items, each with a GitHub Issue, a branch and a merged pull request: ApiError, type guards, AsyncState, a generic useFetch hook, literal unions and utility types, custom hooks, lazy routes, toast notifications, product page tabs, catalog search, category filter, sorting and pagination, and promo code with shipping. I also added COMPATIBILITY.md, weekly progress notes, and a WBS with risks and a definition of done in PLAN.md.
 
 ## What I did not do
 
-- FULL and BONUS features: search, categories, sorting, pagination, reviews, related products, Orders, Profile, lazy routes, `@theme`, dark mode.
-- The cart and login are not saved, so a refresh empties the cart and logs the user out.
+- Dark theme (Issue #9), product reviews (#15), a measured React.memo with the Profiler (#17), the demo video (#22).
+- Orders page, Profile page, Formik and Yup, a reducer-based cart and saving the cart in localStorage.
+- A Lighthouse run before my changes. I only have a run on the final version, so the table below has no "before" column.
+- The cart, the promo code and the login are not saved, so a refresh empties the cart and logs the user out.
 
+## Metrics
+
+| Metric | Value |
+| --- | --- |
+| Commits on `main` | 87 |
+| Different days with commits | 8 |
+| Merged pull requests | 14 |
+| GitHub Issues (total / closed) | 22 / 17 |
+| Lighthouse (mobile, live site, final version) | Performance 85, Accessibility 95, Best Practices 96, SEO 83 |
+| Main JavaScript bundle | 267.26 kB (85.14 kB gzipped) |
+| CSS | 18.59 kB (4.46 kB gzipped) |
+| Page chunks (lazy-loaded) | Catalog 7.13 kB, ProductDetails 4.48 kB, Cart 3.83 kB, Checkout 3.15 kB, Login 2.01 kB |
+
+I did not reach 40 commits over 15 different days, because I started late and worked in a few long days.
 
 ## 3 problems I hit
 
@@ -27,9 +44,15 @@
 2. **Backup files in Git.** A VS Code extension saved copies of my files in a `.history` folder and `git add .` committed them, which caused 15 lint errors. I ignored the folder in `.gitignore` and in ESLint (bug 4).
 3. **Error Boundary test broke the app.** I put `useLocation` and the test `throw` outside their functions. I moved them inside the components (bug 6).
 
+I also forgot to save `products.ts` in one pull request, so a missing product showed a red "Product not found" message instead of the 404 page. I noticed it when I tested `/products/999999` and fixed it in a second pull request.
+
 ## How I used AI
 
 I used Claude as a step-by-step guide. For each day it gave me the code and the steps, and I pasted it, ran it, tested it and fixed the errors I hit, then committed each step myself. I also used it to learn what things do, for example strict mode, `useEffect` dependencies and the SPA rewrite in `vercel.json`. I used Gemini to draft the first descriptions of some files, and I then rewrote them in my own words. The plan, the commits and the notes below are my own.
+
+## Test
+
+Tested in Brave and Firefox, including the 375px width: no sideways scrolling and the full shopping flow works. Fresh clone, install, typecheck and build tested in Brave. More in COMPATIBILITY.md.
 
 ---
 
@@ -196,13 +219,58 @@ Cart items now keep `discountPercentage`, and `price.ts` got `unitPrice`, `lineT
 **Checkout.tsx**
 Full name needs at least 3 characters and the address at least 5, with messages under the fields. An empty cart sends you to `/cart`. Place order greys out while submitting (a short 0.8 second wait), then it shows "Thank you! Your order has been placed." and empties the cart.
 
-## Test
+## Nov 5: Spec texts and TypeScript
 
-Tested in Brave and Firefox, including the 375px width: no sideways scrolling and the full shopping flow works. Fresh clone, install, typecheck and build tested in Brave.
+**Appendix A check**
+Compared my texts with Appendix A of the PRD. In Checkout, an empty or too short name, email or address now shows the one exact message from the table. Clear cart asks for a confirmation first, the Login button says "Log In", the cards say "Out of stock" at 0 stock, and the product page shows "In stock", "Only N left!" or "Out of stock".
 
+**ApiError (Issue #1)**
+Made `src/api/ApiError.ts`, an error class that carries the HTTP status. The fetch functions throw it, and the product page shows the 404 page when the status is 404. In my first pull request I forgot to save `products.ts`, so a missing product showed a red message instead. A second pull request fixed that.
+
+**Type guards (Issue #2)**
+Made `src/utils/guards.ts` with `isApiError` and `isProduct`. `fetchProduct` now checks that the data really looks like a product.
+
+**AsyncState (Issue #3)**
+Made `src/types/async.ts`, a type with the states idle, loading, success and error, so the product page holds one state instead of three.
+
+**useFetch (Issue #4)**
+Made a generic `useFetch<T, A>` hook in `src/hooks` that fetches data and returns the `AsyncState` and the raw error.
+
+**Literal unions and utility types (Issue #5)**
+Made `src/utils/stock.ts` with a `StockStatus` type (`'in-stock' | 'low-stock' | 'out-of-stock'`), `Pick<Product, 'stock'>` and `Record<StockStatus, string>`.
+
+**Custom hooks (Issue #6)**
+Added `useCart` and `useAuth`, so Cart, Checkout and ProductDetails no longer call `useContext` with the context object.
+
+**Lazy routes (Issue #7)**
+Pages are loaded with `React.lazy`, and Layout wraps them in `Suspense` with a "Loading..." line. The build now has one small file per page.
+
+**COMPATIBILITY.md and PLAN.md (Issues #21 and #19)**
+Wrote down the browsers and screen sizes I tested, and added a work breakdown with hours, risks and a definition of done to `PLAN.md`.
+
+**Toast notifications (Issue #8)**
+Added a toast provider and a `useToast` hook. "Added to cart ✓" and "Removed from cart" show for about 2.5 seconds in the bottom corner.
+
+## Nov 6: Product page and catalog features
+
+**ProductCard.tsx**
+The Add to cart button on a card now shows the toast too, and the low-stock badge says "Only N left!" like the product page.
+
+**Product page tabs (Issue #10)**
+Description and Details tabs under the buy button. Details shows category, brand, rating, stock and discount.
+
+**Catalog search, filter, sort and pagination (Issues #12, #13, #14)**
+The catalog has a search box, a category select, a sort select and page buttons. Everything is stored in the URL, so refresh, Back and shared links keep the same view. Requests use `AbortController`, loading shows skeleton cards, and errors have a Retry button. Search and category can't be combined because the API can't do both in one request.
+
+**Promo code and shipping (Issue #11)**
+The Cart has a promo code box. `10X10` in any letter case takes 10% off, and anything else shows "Invalid promo code". Shipping is $10 and free from $100. The cart shows Subtotal, Discount, Shipping and Total, and Checkout uses the same total from `price.ts`.
+
+**Progress notes (Issue #18)**
+Wrote the three weekly progress notes in `docs/progress`, with estimated hours because I did not track my time.
 
 ## Known limitations
 
-- The cart and the login are kept in memory only, so refreshing the page empties the cart and logs the user out.
+- The cart, the promo code and the login are kept in memory only, so refreshing the page empties the cart and logs the user out.
 - Login and checkout are simulations: any login with a 6 character password works and no payment is processed.
-- Only CORE features are implemented (no search, filters, sorting, pagination, reviews or orders page).
+- Search and category filter cannot be combined.
+- Not implemented: dark theme, product reviews, orders page, profile page.
