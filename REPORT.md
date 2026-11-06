@@ -14,11 +14,11 @@
 - Planned: responsive, hover/focus states, errors, deploy, docs, submit.
 - Delivered: responsive fixes, focus and disabled states, Error Boundary, Vercel deploy, README, PLAN, REPORT and DEBUG-LOG.
 - On Nov 4 I got a grading checklist for the Oct 26 version. I fixed the missing CORE items from it: Footer, ScrollToTop, full 404 page, Log in / Log out texts, Login validation, product card details, discounts on the product page and cart, Clear cart, and the Checkout validation and thank-you text. Then I matched the exact error texts to Appendix A of the PRD.
-- On Nov 5 and Nov 6 I started on FULL items, each with a GitHub Issue, a branch and a merged pull request: ApiError, type guards, AsyncState, a generic useFetch hook, literal unions and utility types, custom hooks, lazy routes, toast notifications, product page tabs, catalog search, category filter, sorting and pagination, promo code with shipping, product reviews and a dark and light theme. I also added COMPATIBILITY.md, weekly progress notes, and a WBS with risks and a definition of done in PLAN.md.
+- On Nov 5 and Nov 6 I started on FULL items, each with a GitHub Issue, a branch and a merged pull request: ApiError, type guards, AsyncState, a generic useFetch hook, literal unions and utility types, custom hooks, lazy routes, toast notifications, product page tabs, catalog search, category filter, sorting and pagination, promo code with shipping, product reviews, a dark and light theme and a measured React.memo. I also added COMPATIBILITY.md, weekly progress notes, and a WBS with risks and a definition of done in PLAN.md.
 
 ## What I did not do
 
-- A measured React.memo with the Profiler (Issue #17) and the demo video (Issue #22).
+- The demo video (Issue #22).
 - Orders page, Profile page, Formik and Yup, a reducer-based cart and saving the cart in localStorage.
 - A Lighthouse run before my changes. I only have a run on the final version, so the table below has no "before" column.
 - The cart, the promo code and the login are not saved, so a refresh empties the cart and logs the user out.
@@ -36,6 +36,7 @@
 | Main JavaScript bundle | 267.26 kB (85.14 kB gzipped) |
 | CSS | 18.59 kB (4.46 kB gzipped) |
 | Page chunks (lazy-loaded) | Catalog 7.13 kB, ProductDetails 4.48 kB, Cart 3.83 kB, Checkout 3.15 kB, Login 2.01 kB |
+| React.memo on ProductCard (Profiler, typing one letter in search) | Before: 23.4 ms, 12 cards re-rendered. After: 4.6 ms, 0 cards re-rendered |
 
 I did not reach 40 commits over 15 different days, because I started late and worked in a few long days.
 
@@ -271,6 +272,9 @@ Added a Reviews tab on the product page. It shows the reviews that come with the
 
 **Dark and light theme (Issue #9)**
 Added a toggle button in the header and a `useTheme` hook. The hook adds or removes a `dark` class on the page and saves the choice in localStorage under `shop_theme`, so a refresh keeps it. To save time I did the dark colours as rules in `index.css` that re-colour the light classes I already use, instead of adding `dark:` classes to every component. It works on all pages, and the cleaner long-term way would be `dark:` classes in each component.
+
+**React.memo on ProductCard (Issue #17)**
+I recorded the Catalog page in the React Profiler while typing one letter in the search box. Before: 23.4 ms and all 12 cards re-rendered. After wrapping ProductCard in React.memo: 4.6 ms and the cards were skipped. This is a dev build, so the numbers are only for comparing the two runs. Cards still redraw when the cart changes, because they read the cart through context.
 
 **Progress notes (Issue #18)**
 Wrote the three weekly progress notes in `docs/progress`, with estimated hours because I did not track my time.
